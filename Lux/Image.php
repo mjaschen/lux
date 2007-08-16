@@ -33,7 +33,7 @@ class Lux_Image extends Solar_Base {
      * @var array
      *
      */
-    protected $_Abovo_Image = array(
+    protected $_Lux_Image = array(
         'file'    => null,
         'adapter' => 'Lux_Image_Adapter_Gd',
     );
