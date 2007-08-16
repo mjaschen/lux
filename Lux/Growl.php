@@ -111,6 +111,7 @@ class Lux_Growl extends Sungrazr_Socket_Client {
         'transport' => 'udp',
         'target'    => '127.0.0.1',
         'port'      => 9887,
+        'context'   => array(),
     );
     
     /**
