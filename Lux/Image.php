@@ -25,10 +25,10 @@
  *
  */
 class Lux_Image extends Solar_Base {
-    
+
     /**
      *
-     * Config keys
+     * Config keys.
      *
      * @var array
      *
@@ -37,12 +37,12 @@ class Lux_Image extends Solar_Base {
         'file'    => null,
         'adapter' => 'Lux_Image_Adapter_Gd',
     );
-    
+
     /**
      *
-     * undocumented function
+     * Factory method for returning adapters.
      *
-     * @return void
+     * @return Lux_Image_Adapter
      *
      */
     public function solarFactory()

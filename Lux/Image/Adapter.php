@@ -11,6 +11,8 @@
  *
  * @author Rodrigo Moraes <rodrigo.moraes@gmail.com>
  *
+ * @author Paul M. Jones <pmjones@solarphp.com>
+ *
  * @version $Id$
  *
  */
@@ -25,7 +27,7 @@
  *
  */
 abstract class Lux_Image_Adapter extends Solar_Base {
-    
+
     /**
      *
      * User-provided configuration.
@@ -41,7 +43,7 @@ abstract class Lux_Image_Adapter extends Solar_Base {
     protected $_Lux_Image_Adapter = array(
         'suppress_warnings' => true,
     );
-    
+
     /**
      *
      * Maps [[IMAGETYPE constants | http://www.php.net/manual/en/ref.image.php]]
@@ -129,6 +131,153 @@ abstract class Lux_Image_Adapter extends Solar_Base {
      *
      */
     protected $_target_handle;
+
+    /**
+     *
+     * Processor objects, keyed on method name.
+     *
+     * For example, 'resize' => Lux_Image_Adapter_Gd_Resize object.
+     *
+     * @var array
+     *
+     */
+    protected $_processor = array();
+
+    /**
+     *
+     * Class stack for finding image processors.
+     *
+     * @var Solar_Class_Stack
+     *
+     */
+    protected $_stack;
+
+    /**
+     *
+     * Constructor.
+     *
+     * @param array $config User-provided configuration values.
+     *
+     */
+    public function __construct($config = null)
+    {
+        parent::__construct($config);
+
+        // build the filter class stack
+        $this->_stack = Solar::factory('Solar_Class_Stack');
+        $this->setProcessorClass();
+
+        // extended setup
+        $this->_setup();
+    }
+
+    /**
+     *
+     * Magic call to processor methods represented as classes.
+     *
+     * @param string $method The processor method to call; e.g., 'resize'
+     * maps to `Lux_Image_Adapter_Gd_Resize::resize()`.
+     *
+     * @param array $params Params passed to the method, if any.
+     *
+     * @return mixed
+     *
+     */
+    public function __call($method, $params)
+    {
+        // Execute the image processor.
+        $processor = $this->getProcessor($method);
+        return call_user_func_array(
+            array($processor, $method),
+            $params
+        );
+    }
+
+    /**
+     *
+     * Reset the processor class stack.
+     *
+     * @param string|array $list The processor to set for the stack.
+     *
+     * @return void
+     *
+     * @see Solar_Class_Stack::set()
+     *
+     * @see Solar_Class_Stack::add()
+     *
+     */
+    public function setProcessorClass($list = null)
+    {
+        $this->_stack->set(get_class($this));
+        $this->_stack->add($list);
+    }
+
+    /**
+     *
+     * Add to the processor class stack.
+     *
+     * @param string|array $list The processor to add to the stack.
+     *
+     * @return void
+     *
+     * @see Solar_Class_Stack::add()
+     *
+     */
+    public function addProcessorClass($list)
+    {
+        $this->_stack->add($list);
+    }
+
+    /**
+     *
+     * Returns the processor class stack.
+     *
+     * @return array The stack of processor classes.
+     *
+     * @see Solar_Class_Stack::get()
+     *
+     */
+    public function getProcessorClass()
+    {
+        return $this->_stack->get();
+    }
+
+    /**
+     *
+     * Gets the stored processor object by method name.
+     *
+     * Creates the processor object if it does not already exist.
+     *
+     * @param string $method The method name, e.g. 'resize'.
+     *
+     * @return Lux_Image_Processor The stored processor object.
+     *
+     */
+    public function getProcessor($method)
+    {
+        if (empty($this->_processor[$method])) {
+            $this->_processor[$method] = $this->newProcessor($method);
+        }
+
+        return $this->_processor[$method];
+    }
+
+    /**
+     *
+     * Creates a new processor object by method name.
+     *
+     * @param string $method The method name, e.g. 'resize'.
+     *
+     * @return Lux_Image_Processor The new processor object.
+     *
+     */
+    public function newProcessor($method)
+    {
+        $method[0] = strtolower($method[0]);
+        $class = $this->_stack->load($method);
+        $obj = Solar::factory($class, array('_image' => $this));
+        return $obj;
+    }
 
     /**
      *
@@ -235,26 +384,6 @@ abstract class Lux_Image_Adapter extends Solar_Base {
 
     /**
      *
-     * Resizes a image.
-     *
-     * @param int $width Destination width, in pixels.
-     *
-     * @param int $height Destination height, in pixels.
-     *
-     * @param array $options Resize options.
-     *
-     * @return void
-     *
-     */
-    public function resize($width, $height, $options = array())
-    {
-        throw $this->_exception('ERR_METHOD_NOT_IMPLEMENTED', array(
-            'method' => 'resize',
-        ));
-    }
-
-    /**
-     *
      * Returns a file info.
      *
      * @return array Image info.
@@ -262,6 +391,9 @@ abstract class Lux_Image_Adapter extends Solar_Base {
      */
     public function getInfo()
     {
+        // Check if file info was loaded.
+        $this->_checkInfo();
+
         return $this->_info;
     }
 
@@ -274,7 +406,46 @@ abstract class Lux_Image_Adapter extends Solar_Base {
      */
     public function getHandle()
     {
+        // Check if source handle was created.
+        $this->_checkHandle();
+
         return $this->_handle;
+    }
+
+    /**
+     *
+     * Sets a file handle.
+     *
+     * @param resource $handle Image resource identifier.
+     *
+     */
+    public function setHandle($handle)
+    {
+        $this->_handle = $handle;
+    }
+
+    /**
+     *
+     * Returns the target file handle.
+     *
+     * @return resource Image resource identifier.
+     *
+     */
+    public function getTargetHandle()
+    {
+        return $this->_target_handle;
+    }
+
+    /**
+     *
+     * Sets the target file handle.
+     *
+     * @param resource $handle Image resource identifier.
+     *
+     */
+    public function setTargetHandle($handle)
+    {
+        $this->_target_handle = $handle;
     }
 
     /**
@@ -287,6 +458,18 @@ abstract class Lux_Image_Adapter extends Solar_Base {
     {
         if (! $this->_info) {
             throw $this->_exception('ERR_IMAGE_INFO_NOT_LOADED');
+        }
+    }
+
+    /**
+     *
+     * Checks if the current source handle is a resource.
+     *
+     */
+    protected function _checkHandle()
+    {
+        if (! is_resource($this->_handle)) {
+            throw $this->_exception('ERR_INVALID_RESOURCE');
         }
     }
 
@@ -305,5 +488,16 @@ abstract class Lux_Image_Adapter extends Solar_Base {
                 'type' => $type,
             ));
         }
+    }
+
+    /**
+     *
+     * Allows specialized setup for adapters and extended classes.
+     *
+     * @return void
+     *
+     */
+    protected function _setup()
+    {
     }
 }

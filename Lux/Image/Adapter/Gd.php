@@ -18,14 +18,14 @@
 /**
  *
  * Class for image manipulation
- * 
+ *
  * @category Lux
- * 
+ *
  * @package Lux_Image
- * 
+ *
  */
 class Lux_Image_Adapter_Gd extends Lux_Image_Adapter {
-    
+
     /**
      *
      * List of image types supported by the adapter.
@@ -36,7 +36,7 @@ class Lux_Image_Adapter_Gd extends Lux_Image_Adapter {
     protected $_supported_types = array(
         'gif', 'jpeg', 'png', 'wbmp', 'xbm',
     );
-    
+
     /**
      *
      * Constructor.
@@ -196,78 +196,6 @@ class Lux_Image_Adapter_Gd extends Lux_Image_Adapter {
 
     /**
      *
-     * Resizes a image.
-     *
-     * Resizes an image to size specified with $width and
-     * $height. If either of those values is set to empty,
-     * the empty value's size is calculated based on the proportion
-     * of it in the original image. For example, when an image that
-     * is 100x50 pixels is resized with resize(null, 20), the
-     * resulting size will be 40x20.
-     *
-     * @param int $width Destination width, in pixels
-     *
-     * @param int $height Destination height, in pixels
-     *
-     * @param array $options Resize options
-     *
-     * @return array Array with two elements; resulting width
-     * and height
-     *
-     */
-    public function resize($width, $height, $options = array())
-    {
-        // Check if file info was loaded.
-        $this->_checkInfo();
-
-        // Check if source handle was created.
-        if (! is_resource($this->_handle)) {
-            throw $this->_exception('ERR_INVALID_RESOURCE');
-        }
-
-        // default options
-        $default = array(
-            'quality' => 100,
-            'bg'      => array(0, 0, 0),
-        );
-
-        // set options
-        $options = array_merge($default, $options);
-
-        // should we count proportional sizes?
-        if (empty($width) xor empty($height)) {
-            $width_height = $this->_info['width'] / $this->_info['height'];
-
-            if (empty($height)) {
-                $height = round($width / $width_height);
-            } else {
-                $width = round($height * $width_height);
-            }
-        }
-
-        // creates new image resource
-        $this->_create($width, $height, $options['bg']);
-
-        // @todo Depending on the image type, use imagecopyresampled().
-        imagecopyresampled(
-            $this->_target_handle, // target image handle
-            $this->_handle,        // source image handle
-            0, 0,                  // destination coordinates x, y
-            0, 0,                  // source coordinates x, y
-            $width, $height,       // destination width, height
-            $this->_info['width'], // source width
-            $this->_info['height'] // source height
-        );
-
-        // set source handle to the new image handle
-        $this->_handle = $this->_target_handle;
-
-        // return file sizes
-        return array($width, $height);
-    }
-
-    /**
-     *
      * Creates the target image handle and sets
      * a background color for it
      *
@@ -278,7 +206,7 @@ class Lux_Image_Adapter_Gd extends Lux_Image_Adapter {
      * @return void
      *
      */
-    protected function _create($width, $height, $rgb = array(0, 0, 0))
+    public function create($width, $height, $rgb = array(0, 0, 0))
     {
         // create image
         $this->_target_handle = imagecreatetruecolor($width, $height);
