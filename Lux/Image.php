@@ -34,7 +34,6 @@ class Lux_Image extends Solar_Base {
      *
      */
     protected $_Lux_Image = array(
-        'file'    => null,
         'adapter' => 'Lux_Image_Adapter_Gd',
     );
 
@@ -47,6 +46,8 @@ class Lux_Image extends Solar_Base {
      */
     public function solarFactory()
     {
-        return Solar::factory($this->_config['adapter']);
+        $class = $this->_config['adapter'];
+        unset($this->_config['adapter']);
+        return Solar::factory($class, $this->_config);
     }
 }
