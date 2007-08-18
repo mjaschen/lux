@@ -197,8 +197,12 @@ class Lux_Controller_Route_Regex extends Solar_Base
             if (is_int($key) && !$reversed) {
                 if (array_key_exists($key, $this->_map)) {
                     $index = $this->_map[$key];
-                } elseif($index !== array_search($key, $this->_map)) {
-                    $index = $key;
+                } else {
+                    $index = array_search($key, $this->_map);
+
+                    if($index === false) {
+                        $index = $key;
+                    }
                 }
                 $return[$index] = $values[$key];
             } elseif ($reversed) {
