@@ -44,7 +44,8 @@ class Lux_Controller_Route_Regex extends Solar_Base
      * : (string) Map used to match with path info.
      *
      * `defaults`
-     * : (array) Defaults for map variables with keys as variable names.
+     * : (array) Defaults to map preg_match() result positions to route
+     *   variables.
      *
      * `map`
      * : (array) An associative array of regex subpatterns to parameter named
@@ -57,7 +58,7 @@ class Lux_Controller_Route_Regex extends Solar_Base
      * @var array
      *
      */
-    protected $_Lux_Controller_Route_Static = array(
+    protected $_Lux_Controller_Route_Regex = array(
         'route'    => null,
         'defaults' => array(),
         'map'      => array(),
@@ -75,7 +76,7 @@ class Lux_Controller_Route_Regex extends Solar_Base
 
     /**
      *
-     * Defaults to map route variables with keys as variable names.
+     * Defaults to map preg_match() result positions to route variables.
      *
      * @var array
      *
@@ -144,7 +145,8 @@ class Lux_Controller_Route_Regex extends Solar_Base
 
         if ($res === 0) return false;
 
-        // array_filter_key()? Why isn't this in a standard PHP function set yet? :)
+        // array_filter_key()?
+        // Why isn't this in a standard PHP function set yet? :)
         foreach ($values as $i => $value) {
             if (!is_int($i) || $i === 0) {
                 unset($values[$i]);
@@ -182,7 +184,8 @@ class Lux_Controller_Route_Regex extends Solar_Base
      * @return array An array of mapped values.
      *
      */
-    protected function _getMappedValues($values, $reversed = false, $preserve = false)
+    protected function _getMappedValues($values, $reversed = false,
+        $preserve = false)
     {
         if (count($this->_map) == 0) {
             return $values;
@@ -194,12 +197,17 @@ class Lux_Controller_Route_Regex extends Solar_Base
             if (is_int($key) && !$reversed) {
                 if (array_key_exists($key, $this->_map)) {
                     $index = $this->_map[$key];
-                } elseif (false === ($index = array_search($key, $this->_map))) {
+                } elseif($index !== array_search($key, $this->_map)) {
                     $index = $key;
                 }
                 $return[$index] = $values[$key];
             } elseif ($reversed) {
-                $index = (!is_int($key)) ? array_search($key, $this->_map, true) : $key;
+                if(!is_int($key)) {
+                    $index = array_search($key, $this->_map, true);
+                } else {
+                    $index = $key;
+                }
+
                 if (false !== $index) {
                     $return[$index] = $values[$key];
                 }
