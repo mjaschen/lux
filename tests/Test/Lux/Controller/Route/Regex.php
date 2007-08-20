@@ -1,4 +1,5 @@
 <?php
+// Adapted from Zend_Controller_Router_Route_RegexTest.
 class Test_Lux_Controller_Route_Regex extends Solar_Test
 {
     public function testStaticMatch()
@@ -8,19 +9,8 @@ class Test_Lux_Controller_Route_Regex extends Solar_Test
         );
         $route = Solar::factory('Lux_Controller_Route_Regex', $config);
 
-        $values = $route->match('blog/archives');
-        $this->assertSame($values, array());
-    }
-
-    public function testStaticNoMatch()
-    {
-        $config = array(
-            'route' => 'blog/archives',
-        );
-        $route = Solar::factory('Lux_Controller_Route_Regex', $config);
-
-        $values = $route->match('blog');
-        $this->assertSame($values, false);
+        $params = $route->match('blog/archives');
+        $this->assertSame($params, array());
     }
 
     public function testStaticMatchWithDefaults()
@@ -33,20 +23,31 @@ class Test_Lux_Controller_Route_Regex extends Solar_Test
         );
         $route = Solar::factory('Lux_Controller_Route_Regex', $config);
 
-        $values = $route->match('blog/archives');
-        $this->assertSame(count($values), 1);
-        $this->assertSame($values['controller'], 'ctrl');
+        $params = $route->match('blog/archives');
+        $this->assertSame(count($params), 1);
+        $this->assertSame($params['controller'], 'ctrl');
     }
 
-    public function testRootRoute()
+    public function testStaticMatchRoot()
     {
         $config = array(
             'route'      => '',
         );
         $route = Solar::factory('Lux_Controller_Route_Regex', $config);
 
-        $values = $route->match('/');
-        $this->assertSame($values, array());
+        $params = $route->match('/');
+        $this->assertSame($params, array());
+    }
+
+    public function testStaticMatchFailure()
+    {
+        $config = array(
+            'route' => 'blog/archives',
+        );
+        $route = Solar::factory('Lux_Controller_Route_Regex', $config);
+
+        $params = $route->match('blog');
+        $this->assertSame($params, false);
     }
 
     public function testMap()
@@ -61,8 +62,8 @@ class Test_Lux_Controller_Route_Regex extends Solar_Test
         );
         $route = Solar::factory('Lux_Controller_Route_Regex', $config);
 
-        $values = $route->match('blog/archives/2007/08');
-        $keys = array_keys($values);
+        $params = $route->match('blog/archives/2007/08');
+        $keys = array_keys($params);
         $this->assertSame(count($keys), 2);
         $this->assertSame($keys[0], 'year');
         $this->assertSame($keys[1], 'month');
@@ -80,16 +81,16 @@ class Test_Lux_Controller_Route_Regex extends Solar_Test
         );
         $route = Solar::factory('Lux_Controller_Route_Regex', $config);
 
-        $values = $route->match('blog/archives/2007/08');
-        $this->assertSame(count($values), 2);
-        $this->assertSame($values['year'], '2007');
-        $this->assertSame($values['month'], '08');
+        $params = $route->match('blog/archives/2007/08');
+        $this->assertSame(count($params), 2);
+        $this->assertSame($params['year'], '2007');
+        $this->assertSame($params['month'], '08');
 
-        $values = $route->match('blog/archives/fooo/08');
-        $this->assertSame($values, false);
+        $params = $route->match('blog/archives/fooo/08');
+        $this->assertSame($params, false);
     }
 
-    public function testOptionalVariableMatch()
+    public function testOptionalMappedVariableMatch()
     {
         $config = array(
             // Matches:
@@ -106,32 +107,32 @@ class Test_Lux_Controller_Route_Regex extends Solar_Test
         );
         $route = Solar::factory('Lux_Controller_Route_Regex', $config);
 
-        $values = $route->match('blog/archives');
-        $this->assertSame(count($values), 0);
-        $this->assertSame($values, array());
+        $params = $route->match('blog/archives');
+        $this->assertSame(count($params), 0);
+        $this->assertSame($params, array());
 
-        $values = $route->match('blog/archives/2001');
-        $this->assertSame(count($values), 1);
-        $this->assertSame($values['year'], '2001');
+        $params = $route->match('blog/archives/2001');
+        $this->assertSame(count($params), 1);
+        $this->assertSame($params['year'], '2001');
 
-        $values = $route->match('blog/archives/2001/01');
-        $this->assertSame(count($values), 2);
-        $this->assertSame($values['year'], '2001');
-        $this->assertSame($values['month'], '01');
+        $params = $route->match('blog/archives/2001/01');
+        $this->assertSame(count($params), 2);
+        $this->assertSame($params['year'], '2001');
+        $this->assertSame($params['month'], '01');
 
-        $values = $route->match('blog/archives/2001/01/02');
-        $this->assertSame(count($values), 3);
-        $this->assertSame($values['year'], '2001');
-        $this->assertSame($values['month'], '01');
-        $this->assertSame($values['day'], '02');
+        $params = $route->match('blog/archives/2001/01/02');
+        $this->assertSame(count($params), 3);
+        $this->assertSame($params['year'], '2001');
+        $this->assertSame($params['month'], '01');
+        $this->assertSame($params['day'], '02');
     }
 
-    public function testMappedVariableMatchWithDefaults()
+    public function testOptionalMappedVariableMatchWithDefaults()
     {
         $config = array(
             // Matches any values in 3 optional paths (application should
             // sanitize and validate them)
-            'route'    => 'blog/archives(?:/([^/]*)(?:/([^/]*)(?:/([^/]*))?)?)?',
+            'route'    => 'blog/archives(?:/([^/]*))?(?:/([^/]*))?(?:/([^/]*))?',
             'map'      => array(
                 1 => 'year',
                 2 => 'month',
@@ -145,31 +146,31 @@ class Test_Lux_Controller_Route_Regex extends Solar_Test
         );
         $route = Solar::factory('Lux_Controller_Route_Regex', $config);
 
-        $values = $route->match('blog/archives');
-        $this->assertSame(count($values), 3);
-        $this->assertSame($values['year'], date('Y'));
-        $this->assertSame($values['month'], date('m'));
-        $this->assertSame($values['day'], date('d'));
+        $params = $route->match('blog/archives');
+        $this->assertSame(count($params), 3);
+        $this->assertSame($params['year'], date('Y'));
+        $this->assertSame($params['month'], date('m'));
+        $this->assertSame($params['day'], date('d'));
 
-        $values = $route->match('blog/archives/foo');
-        $this->assertSame(count($values), 3);
-        $this->assertSame($values['year'], 'foo');
-        $this->assertSame($values['month'], date('m'));
-        $this->assertSame($values['day'], date('d'));
+        $params = $route->match('blog/archives/foo');
+        $this->assertSame(count($params), 3);
+        $this->assertSame($params['year'], 'foo');
+        $this->assertSame($params['month'], date('m'));
+        $this->assertSame($params['day'], date('d'));
 
-        $values = $route->match('blog/archives/foo/bar');
-        $this->assertSame(count($values), 3);
-        $this->assertSame($values['year'], 'foo');
-        $this->assertSame($values['month'], 'bar');
-        $this->assertSame($values['day'], date('d'));
+        $params = $route->match('blog/archives/foo/bar');
+        $this->assertSame(count($params), 3);
+        $this->assertSame($params['year'], 'foo');
+        $this->assertSame($params['month'], 'bar');
+        $this->assertSame($params['day'], date('d'));
 
-        $values = $route->match('blog/archives/foo/bar/baz');
-        $this->assertSame(count($values), 3);
-        $this->assertSame($values['year'], 'foo');
-        $this->assertSame($values['month'], 'bar');
-        $this->assertSame($values['day'], 'baz');
+        $params = $route->match('blog/archives/foo/bar/baz');
+        $this->assertSame(count($params), 3);
+        $this->assertSame($params['year'], 'foo');
+        $this->assertSame($params['month'], 'bar');
+        $this->assertSame($params['day'], 'baz');
 
-        $values = $route->match('blog/archives/foo/bar/baz/ding');
-        $this->assertSame($values, false);
+        $params = $route->match('blog/archives/foo/bar/baz/ding');
+        $this->assertSame($params, false);
     }
 }
