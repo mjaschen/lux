@@ -1,9 +1,9 @@
 <?php
 /**
  *
- * Route used to manage static URIs. Ported from Zend Framework.
+ * Route used to match static URI's. Ported from Zend Framework.
  *
- * It's a lot faster compared to the standard Route implementation.
+ * Static routes are a lot faster compared to the standard Route implementation.
  *
  * @category Lux
  *
@@ -25,9 +25,7 @@
 
 /**
  *
- * Route used to manage static URIs. Ported from Zend Framework.
- *
- * It's a lot faster compared to the standard Route implementation.
+ * Route used to match static URI's. Ported from Zend Framework.
  *
  * @category Lux
  *

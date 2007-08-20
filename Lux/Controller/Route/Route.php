@@ -11,7 +11,7 @@
  *
  * @author Zend Framework.
  *
- * @author Rodrigo Moraes <rodrigo.moraes@gmail.com>
+ * @author Rodrigo Moraes (Solar port) <rodrigo.moraes@gmail.com>
  *
  * @copyright Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
  *
@@ -214,10 +214,14 @@ class Lux_Controller_Route_Route extends Solar_Base
 
     /**
      *
-     * Undocumented.
+     * Sets the values for wildcards found in the route.
+     *
+     * @param array $parts Route parts.
+     *
+     * @param array $unique Route default keys.
      *
      */
-    protected function _getWildcardData($parts, $unique)
+    protected function _setWildcardData($parts, $unique)
     {
         $pos = count($parts);
         if ($pos % 2) {
@@ -268,7 +272,7 @@ class Lux_Controller_Route_Route extends Solar_Base
 
                 if ($this->_parts[$pos]['regex'] == '*') {
                     $parts = array_slice($path, $pos);
-                    $this->_getWildcardData($parts, $unique);
+                    $this->_setWildcardData($parts, $unique);
                     break;
                 }
 

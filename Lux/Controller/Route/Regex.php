@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Regex Route. Ported from Zend Framework.
+ * Matches URI paths against regular expressions. Ported from Zend Framework.
  *
  * @category Lux
  *
@@ -23,7 +23,7 @@
 
 /**
  *
- * Regex Route. Ported from Zend Framework.
+ * Matches URI paths against regular expressions. Ported from Zend Framework.
  *
  * @category Lux
  *
@@ -236,7 +236,7 @@ class Lux_Controller_Route_Regex extends Solar_Base
     public function assemble($data = array())
     {
         if ($this->_reverse === null) {
-            throw $this->_exception('ERR_REVERSED_ROUTE_NOT_SPECIFIED');
+            throw $this->_exception('ERR_REVERSE_ROUTE_NOT_SPECIFIED');
         }
 
         $data = $this->_getMappedValues($data, true, false);
@@ -248,7 +248,7 @@ class Lux_Controller_Route_Regex extends Solar_Base
         $return = @vsprintf($this->_reverse, $data);
 
         if ($return === false) {
-            throw $this->_exception('ERR_CANNOT ASEMBLE_ROUTE');
+            throw $this->_exception('ERR_ASSEMBLE_FAILED');
         }
 
         return $return;
