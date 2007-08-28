@@ -282,11 +282,11 @@ class Lux_Controller_Router extends Solar_Controller_Front
         }
 
         // Set controller.
-        $page = $params[$this->_config['controller_key']];
+        $page = ucfirst($params[$this->_config['controller_key']]);
 
         if(isset($params[$this->_config['module_key']])) {
             // Set module.
-            $page = $params[$this->_config['module_key']] . '_' . $page;
+            $page = ucfirst($params[$this->_config['module_key']]) . '_' . $page;
         }
 
         // Try to get a class from the module/controller combination.
