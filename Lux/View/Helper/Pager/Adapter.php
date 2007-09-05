@@ -344,13 +344,15 @@ abstract class Lux_View_Helper_Pager_Adapter extends Solar_View_Helper
      */
     protected function _getAction($page, $text)
     {
-        $query_string = $this->_view->getText('PAGER_PAGE_QUERY');
-
         if(array_key_exists($text, $this->_config['locale'])) {
             // Get the locale key from the config.
             $text = $this->_config['locale'][$text];
         }
-
-        return $this->_view->action("{$this->_href}?$query_string=$page", $text);
+        
+        // replace placeholder with page number
+        $href = sprintf($this->_href, (int) $page);
+        
+        // build and return <a>...</a>
+        return $this->_view->action($href, $text);
     }
 }
