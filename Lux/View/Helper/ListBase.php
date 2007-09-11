@@ -164,7 +164,9 @@ class Lux_View_Helper_ListBase extends Solar_View_Helper
                 $attribs = null;
             }
 
-            if(strpos($spec['href'], '://')) {
+            // Try to guess when an anchor is needed.
+            if( strpos($spec['href'], '://') ||
+                strpos($spec['href'], '#') == 0) {
                 // Full url.
                 $res = $this->_view->anchor($spec['href'], $text, $attribs);
             } else {
