@@ -122,7 +122,7 @@ class Lux_Controller_Route_Regex extends Solar_Base
         // Do the "real" construction.
         parent::__construct($config);
 
-        $this->_regex = '#^' . $this->_config['route'] . '$#i';
+        $this->_regex = '#^' . $this->_config['route'] . '$#ix';
         $this->_defaults = (array) $this->_config['defaults'];
         $this->_map = (array) $this->_config['map'];
         $this->_reverse = $this->_config['reverse'];
