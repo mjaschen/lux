@@ -1,15 +1,15 @@
 <?php
 /**
  * 
- * Locale file for Abovo language class
+ * Locale file for Lux intl class
  * 
- * @category Abovo
+ * @category Lux
  * 
- * @package Abovo_Lang
+ * @package Lux_Lang
  * 
  * @author Antti Holvikari <anttih@gmail.com>
  * 
- * @license http://opensource.org/licenses/gpl-license.php GPL
+ * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
 return array(
@@ -22,6 +22,20 @@ return array(
     'DAY_FRI' => 'Perjantai',
     'DAY_SAT' => 'Lauantai',
     'DAY_SUN' => 'Sunnuntai',
+    
+    // month names
+    'MONTH_JAN' => 'Tammikuu',
+    'MONTH_FEB' => 'Helmikuu',
+    'MONTH_MAR' => 'Maaliskuu',
+    'MONTH_APR' => 'Huhtikuu',
+    'MONTH_MAY' => 'Toukokuu',
+    'MONTH_JUN' => 'Kesäkuu',
+    'MONTH_JUL' => 'Heinäkuu',
+    'MONTH_AUG' => 'Elokuu',
+    'MONTH_SEP' => 'Syyskuu',
+    'MONTH_OCT' => 'Lokakuu',
+    'MONTH_NOV' => 'Marraskuu',
+    'MONTH_DEC' => 'Joulukuu',
     
     // country list
     // http://tilastokeskus.fi/tk/tt/luokitukset/lk/valtio_index.html

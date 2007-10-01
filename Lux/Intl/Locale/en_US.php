@@ -1,15 +1,15 @@
 <?php
 /**
  * 
- * Locale file for Abovo language class
+ * Locale file for Lux intl class
  * 
- * @category Abovo
+ * @category Lux
  * 
- * @package Abovo_Lang
+ * @package Lux_Lang
  * 
  * @author Antti Holvikari <anttih@gmail.com>
  * 
- * @license http://opensource.org/licenses/gpl-license.php GPL
+ * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
 return array(
@@ -22,6 +22,20 @@ return array(
     'DAY_FRI' => 'Friday',
     'DAY_SAT' => 'Saturday',
     'DAY_SUN' => 'Sunday',
+    
+    // month names
+    'MONTH_JAN' => 'January',
+    'MONTH_FEB' => 'February',
+    'MONTH_MAR' => 'March',
+    'MONTH_APR' => 'April',
+    'MONTH_MAY' => 'May',
+    'MONTH_JUN' => 'June',
+    'MONTH_JUL' => 'July',
+    'MONTH_AUG' => 'August',
+    'MONTH_SEP' => 'September',
+    'MONTH_OCT' => 'October',
+    'MONTH_NOV' => 'November',
+    'MONTH_DEC' => 'December',
     
     // country names
     // http://www.iso.org/iso/country_codes/iso_3166_code_lists/english_country_names_and_code_elements.htm
