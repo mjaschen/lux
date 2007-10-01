@@ -90,13 +90,13 @@ class Lux_Intl extends Solar_Base {
         $property = "_$key";
         
         // count only once
-        $count = count((array) $this->$property);
+        $count = count($this->$property);
         $key = strtoupper($key);
         
         $list = array();
         for ($i=0; $i < $count; $i++) { 
-            $list[$this->$property[$i]] = $this->locale(
-                $key . '_' . $this->$property[$i]
+            $list[$this->{$property}[$i]] = $this->locale(
+                $key . '_' . $this->{$property}[$i]
             );
         }
         
