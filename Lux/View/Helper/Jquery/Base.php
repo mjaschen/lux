@@ -9,6 +9,8 @@
  *
  * @author Clay Loveless <clay@killersoft.com>
  *
+ * @author Rodrigo Moraes <rodrigo.moraes@gmail.com>
+ *
  * @license http://opensource.org/licenses/bsd-license.php BSD
  *
  * @version $Id$
@@ -24,26 +26,36 @@
  * @package Lux_View_Helper
  *
  */
-class Lux_View_Helper_Jquery_Base extends Lux_View_Helper_JsLibrary
+class Lux_View_Helper_Jquery_Base extends Solar_View_Helper
 {
     /**
      *
-     * User-provided configuration values.
+     * User-provided configuration values. Keys are...
+     *
+     * `scripts`
+     * : (string) Public path to jQuery scripts.
+     *
+     * `styles`
+     * : (string) Public path to jQuery styles. This defines the jQuery theme.
+     *
+     * `images`
+     * : (string) Public path to jQuery images. Images needed by scripts will
+     * be taken from here.
      *
      * @var array
      *
      */
     protected $_Lux_View_Helper_Jquery_Base = array(
-        'scripts' => 'base/js/jquery/',
-        'styles'  => 'base/css/jquery/',
-        'images'  => 'base/img/jquery/',
+        'scripts' => 'scripts/jquery/',
+        'styles'  => 'styles/jquery/themes/flora/',
+        'images'  => 'images/jquery/',
     );
 
     /**
      *
      * Method interface.
      *
-     * @return Child JsLibrary object
+     * @return Lux_View_Helper_Jquery_Base
      *
      */
     public function base()
@@ -64,5 +76,60 @@ class Lux_View_Helper_Jquery_Base extends Lux_View_Helper_JsLibrary
     {
         // Centralizes the scripts on the jQuery helper.
         $this->_view->jquery()->addInlineScript($src);
+    }
+
+    /**
+     *
+     * Add the specified JavaScript file to the Helper_Js file list
+     * if it's not already present.
+     *
+     * @param string $file Name of .js file needed by Helper class
+     *
+     * @return Child JsLibrary object
+     *
+     */
+    public function needsFile($file = null)
+    {
+        // Add configured path
+        $file = $this->_config['scripts'] . $file;
+
+        $this->_view->js()->addFile($file);
+        return $this;
+    }
+
+    /**
+     *
+     * Add the specified JavaScript file to the Helper_Js file list
+     * if it's not already present.
+     *
+     * @param string $file Name of .js file needed by Helper class
+     *
+     * @return Child JsLibrary object
+     *
+     */
+    public function needsStyle($file = null)
+    {
+        // Add configured path
+        $file = $this->_config['styles'] . $file;
+
+        $this->_view->js()->addStyle($file);
+        return $this;
+    }
+
+    /**
+     *
+     * Magic getter.
+     *
+     */
+    public function __get($key)
+    {
+        if($key == 'json') {
+            return $this->_view->js()->json();
+        } else {
+            throw $this->_exception(
+                'ERR_PROPERTY_NOT_DEFINED',
+                array('property' => "\$$key")
+            );
+        }
     }
 }
