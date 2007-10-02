@@ -53,8 +53,6 @@ class Lux_View_Helper_Jquery_TableSorter extends Lux_View_Helper_Jquery_Base
      * @param array $config TableSorter configuration options. Will be encoded
      * to a JSON string.
      *
-     * @return Lux_View_Helper_Jquery_TableSorter
-     *
      */
     public function tableSorter($selector, $config = null)
     {
@@ -66,7 +64,5 @@ class Lux_View_Helper_Jquery_TableSorter extends Lux_View_Helper_Jquery_Base
         // Add inline script.
         $script = '    $("' . $selector . '").tablesorter(' . $config . ');';
         $this->addInlineScript($script);
-
-        return $this;
     }
 }
