@@ -118,6 +118,20 @@ class Lux_View_Helper_Jquery_Base extends Solar_View_Helper
 
     /**
      *
+     * Returns a public href for an image used by a Jquery helper.
+     *
+     * @param string $file Name of image file needed by the helper class.
+     *
+     * @return string Public image path.
+     *
+     */
+    public function getImage($file = null)
+    {
+        return $this->_view->publicHref($this->_config['images'] . $file);
+    }
+
+    /**
+     *
      * Magic getter.
      *
      */

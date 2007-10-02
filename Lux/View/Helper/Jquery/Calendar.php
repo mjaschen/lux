@@ -57,13 +57,10 @@ class Lux_View_Helper_Jquery_Calendar extends Lux_View_Helper_Jquery_Base
     {
         if(!$config) {
             // Set a default configuration.
-            $button = $this->_view->publicHref($this->_config['images'] .
-                'calendar/calendar.gif');
-
             $config = array(
                 'autoPopUp'       => 'both',
                 'buttonImageOnly' => true,
-                'buttonImage'     => $button,
+                'buttonImage'     => $this->getImage('calendar/calendar.gif'),
                 'buttonText'      => 'Calendar',
             );
         }
