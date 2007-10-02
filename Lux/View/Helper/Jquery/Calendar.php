@@ -39,7 +39,7 @@ class Lux_View_Helper_Jquery_Calendar extends Lux_View_Helper_Jquery_Base
 
         // Add scripts and CSS files.
         $this->needsFile('ui.calendar.js');
-        $this->needsStyle('calendar/ui.calendar.css');
+        $this->needsStyle($this->_config['theme'] . '.calendar.css');
     }
 
     /**

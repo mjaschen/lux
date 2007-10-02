@@ -41,7 +41,7 @@ class Lux_View_Helper_Jquery_TableSorter extends Lux_View_Helper_Jquery_Base
 
         // Add scripts and CSS files.
         $this->needsFile('ui.tablesorter.js');
-        $this->needsStyle('tablesorter/water.css');
+        $this->needsStyle($this->_config['theme'] . '.tablesorter.css');
     }
 
     /**

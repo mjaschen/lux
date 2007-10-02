@@ -44,8 +44,7 @@ class Lux_View_Helper_Jquery_Dialog extends Lux_View_Helper_Jquery_Base
         $this->needsFile('ui.mouse.js');
         $this->needsFile('ui.draggable.js');
 
-        $this->needsStyle('dialog/ui.dialog.css');
-        $this->needsStyle('flora/flora.all.css');
+        $this->needsStyle($this->_config['theme'] .'.dialog.css');
     }
 
     /**
