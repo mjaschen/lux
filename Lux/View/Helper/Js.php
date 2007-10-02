@@ -39,6 +39,7 @@ class Lux_View_Helper_Js extends Lux_View_Helper_JsLibrary
      */
     protected $_Lux_View_Helper_Js = array(
         'attribs' => array(),
+        'event'   => null,
     );
 
     /**
@@ -76,6 +77,15 @@ class Lux_View_Helper_Js extends Lux_View_Helper_JsLibrary
      *
      */
     protected $_json;
+
+    /**
+     *
+     * Registered observers.
+     *
+     * @var array
+     *
+     */
+    protected $_observers = array();
 
     /**
      *
@@ -156,7 +166,7 @@ class Lux_View_Helper_Js extends Lux_View_Helper_JsLibrary
         $params = array('scripts' => $inline);
 
         // Post an event notification to plugins.
-        Solar::registry('event')->notify('fetchInlineScript', $this, $params);
+        $this->notify('fetchInlineScript', $this, $params);
 
         return $params['scripts'];
     }
@@ -276,5 +286,43 @@ class Lux_View_Helper_Js extends Lux_View_Helper_JsLibrary
         }
 
         return $this->_json;
+    }
+
+    /**
+     *
+     * Registers an observer for an event.
+     *
+     * @var string $event Event name.
+     *
+     * @var array $callback A valid callback.
+     *
+     */
+    public function register($event, $callback)
+    {
+        $this->_observers[$event][] = $callback;
+    }
+
+    /**
+     *
+     * Notify registered observers.
+     *
+     * @var string $event Event name.
+     *
+     * @var object $subject The event subscriber (or "subject").
+     *
+     * @var array $params Optional parameters.
+     *
+     * @return void
+     *
+     */
+    public function notify($event, $subject, &$params)
+    {
+        if(array_key_exists($event, $this->_observers)) {
+            foreach($this->_observers[$event] as $callback) {
+                $obj = $callback[0];
+                $method = $callback[1];
+                $obj->$method($subject, $params);
+            }
+        }
     }
 }

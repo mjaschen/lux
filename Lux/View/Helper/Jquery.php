@@ -44,7 +44,7 @@ class Lux_View_Helper_Jquery extends Lux_View_Helper_Js
 
         // Subscribe this to the 'FetchInlineScript' event.
         $callback = array($this, 'eventFetchInlineScript');
-        Solar::registry('event')->register('fetchInlineScript', $callback);
+        $this->_view->js()->register('fetchInlineScript', $callback);
     }
 
     /**
