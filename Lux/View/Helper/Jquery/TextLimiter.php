@@ -1,7 +1,10 @@
 <?php
 /**
  *
- * Adds a maxLenght to elements - usually textareas.
+ * Activate the maxLenght property in input fields, limiting the number of
+ * characters they accept.
+ *
+ * Useful to limit text that can be inserted in a textarea.
  *
  * @category Tipos
  *
@@ -17,15 +20,15 @@
 
 /**
  *
- * Adds a maxLenght to elements - usually textareas.
+ * Activate the maxLenght property in input fields, limiting the number of
+ * characters they accept.
  *
  * @category Tipos
  *
  * @package Lux_View_Helper
  *
  */
-class Lux_View_Helper_Jquery_TextLimiter extends
-    Lux_View_Helper_Jquery_Base
+class Lux_View_Helper_Jquery_TextLimiter extends Lux_View_Helper_Jquery_Base
 {
     /**
      *
@@ -44,9 +47,10 @@ class Lux_View_Helper_Jquery_TextLimiter extends
 
     /**
      *
-     * Adds the inline script to activate the maxLenght property in a textarea.
+     * Adds the inline script to activate the maxLenght property for a input
+     * field.
      *
-     * @param string $selector A jQuery selector for the target form element.
+     * @param string $selector A jQuery selector for the target input element.
      *
      * @return void
      *

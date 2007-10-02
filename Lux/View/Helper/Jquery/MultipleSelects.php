@@ -29,8 +29,7 @@
  * @package Lux_View_Helper
  *
  */
-class Lux_View_Helper_Jquery_MultipleSelects extends
-    Lux_View_Helper_Jquery_Base
+class Lux_View_Helper_Jquery_MultipleSelects extends Lux_View_Helper_Jquery_Base
 {
     /**
      *
