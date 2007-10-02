@@ -1,10 +1,10 @@
 <?php
 /**
  *
- * Cleaned up version of Solar_View_Helper_Js, using Tipos event system to
+ * Cleaned up version of Solar_View_Helper_Js, using an observer system to
  * fetch inline scripts.
  *
- * @category Tipos
+ * @category Lux
  *
  * @package Lux_View_Helper_Js
  *
@@ -18,10 +18,10 @@
 
 /**
  *
- * Cleaned up version of Solar_View_Helper_Js, using Tipos event system to
+ * Cleaned up version of Solar_View_Helper_Js, using an observer system to
  * fetch inline scripts.
  *
- * @category Tipos
+ * @category Lux
  *
  * @package Lux_View_Helper_Js
  *

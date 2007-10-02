@@ -7,7 +7,7 @@
  * Uses the jQuery plugin jqMultiSelects:
  * [[jqMultiSelects | http://code.google.com/p/jqmultiselects/]]
  *
- * @category Tipos
+ * @category Lux
  *
  * @package Lux_View_Helper
  *
@@ -24,7 +24,7 @@
  * Allows multiple options to be selected and moved from a <select> element
  * to another <select> element.
  *
- * @category Tipos
+ * @category Lux
  *
  * @package Lux_View_Helper
  *

@@ -3,7 +3,7 @@
  *
  * Attachs a calendar widget to a form field.
  *
- * @category Tipos
+ * @category Lux
  *
  * @package Lux_View_Helper
  *
@@ -19,7 +19,7 @@
  *
  * Attachs a calendar widget to a form field.
  *
- * @category Tipos
+ * @category Lux
  *
  * @package Lux_View_Helper
  *

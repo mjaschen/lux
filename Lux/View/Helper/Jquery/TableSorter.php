@@ -4,7 +4,7 @@
  * Javascript helper to turn a standard HTML table with THEAD and TBODY tags
  * into a sortable table without page refreshes.
  *
- * @category Tipos
+ * @category Lux
  *
  * @package Lux_View_Helper
  *
@@ -21,7 +21,7 @@
  * Javascript helper to turn a standard HTML table with THEAD and TBODY tags
  * into a sortable table without page refreshes.
  *
- * @category Tipos
+ * @category Lux
  *
  * @package Lux_View_Helper
  *

@@ -3,7 +3,7 @@
  *
  * jQuery base helper.
  *
- * @category Tipos
+ * @category Lux
  *
  * @package Lux_View_Helper
  *
@@ -21,7 +21,7 @@
  *
  * jQuery base helper.
  *
- * @category Tipos
+ * @category Lux
  *
  * @package Lux_View_Helper
  *

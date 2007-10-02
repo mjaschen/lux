@@ -6,7 +6,7 @@
  *
  * Useful to limit text that can be inserted in a textarea.
  *
- * @category Tipos
+ * @category Lux
  *
  * @package Lux_View_Helper
  *
@@ -23,7 +23,7 @@
  * Activate the maxLenght property in input fields, limiting the number of
  * characters they accept.
  *
- * @category Tipos
+ * @category Lux
  *
  * @package Lux_View_Helper
  *

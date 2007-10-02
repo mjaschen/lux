@@ -3,7 +3,7 @@
  *
  * Dialog widget.
  *
- * @category Tipos
+ * @category Lux
  *
  * @package Lux_View_Helper
  *
@@ -19,7 +19,7 @@
  *
  * Dialog widget.
  *
- * @category Tipos
+ * @category Lux
  *
  * @package Lux_View_Helper
  *

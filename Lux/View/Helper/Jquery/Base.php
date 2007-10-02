@@ -3,7 +3,7 @@
  *
  * Base class for jQuery helpers.
  *
- * @category Tipos
+ * @category Lux
  *
  * @package Lux_View_Helper
  *
@@ -21,7 +21,7 @@
  *
  * Base class for JavaScript library helpers.
  *
- * @category Tipos
+ * @category Lux
  *
  * @package Lux_View_Helper
  *

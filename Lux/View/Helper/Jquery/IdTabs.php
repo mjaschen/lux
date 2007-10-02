@@ -3,7 +3,7 @@
  *
  * Helper to build navigation tabs using javascript.
  *
- * @category Tipos
+ * @category Lux
  *
  * @package Lux_View_Helper
  *
@@ -19,7 +19,7 @@
  *
  * Helper to build navigation tabs using javascript.
  *
- * @category Tipos
+ * @category Lux
  *
  * @package Lux_View_Helper
  *
