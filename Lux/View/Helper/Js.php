@@ -28,7 +28,7 @@
  * @author Clay Loveless <clay@killersoft.com>
  *
  */
-class Lux_View_Helper_Js extends Lux_View_Helper_JsLibrary
+class Lux_View_Helper_Js extends Solar_View_Helper_JsLibrary
 {
     /**
      *
