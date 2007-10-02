@@ -40,7 +40,7 @@ class Lux_View_Helper_Jquery_Base extends Solar_View_Helper
      *
      * `images`
      * : (string) Public path to jQuery images. Images needed by scripts will
-     * be taken from here.
+     * be taken from here, and are also related to the theme being used.
      *
      * @var array
      *
@@ -48,7 +48,7 @@ class Lux_View_Helper_Jquery_Base extends Solar_View_Helper
     protected $_Lux_View_Helper_Jquery_Base = array(
         'scripts' => 'scripts/jquery/',
         'styles'  => 'styles/jquery/themes/flora/',
-        'images'  => 'images/jquery/',
+        'images'  => 'images/jquery/themes/flora/',
     );
 
     /**
