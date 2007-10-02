@@ -42,13 +42,17 @@ class Lux_View_Helper_Jquery_Base extends Solar_View_Helper
      * : (string) Public path to jQuery images. Images needed by scripts will
      * be taken from here, and are also related to the theme being used.
      *
+     * `theme`
+     * : (string) jQuery theme name.
+     *
      * @var array
      *
      */
     protected $_Lux_View_Helper_Jquery_Base = array(
         'scripts' => 'scripts/jquery/',
-        'styles'  => 'styles/jquery/themes/flora/',
-        'images'  => 'images/jquery/themes/flora/',
+        'styles'  => 'styles/jquery/themes/',
+        'images'  => 'images/jquery/themes/',
+        'theme'   => 'flora',
     );
 
     /**
@@ -110,7 +114,7 @@ class Lux_View_Helper_Jquery_Base extends Solar_View_Helper
     public function needsStyle($file = null)
     {
         // Add configured path
-        $file = $this->_config['styles'] . $file;
+        $file = $this->_config['styles'] . $this->_config['theme'] . '/' . $file;
 
         $this->_view->js()->addStyle($file);
         return $this;
@@ -127,7 +131,23 @@ class Lux_View_Helper_Jquery_Base extends Solar_View_Helper
      */
     public function getImage($file = null)
     {
-        return $this->_view->publicHref($this->_config['images'] . $file);
+        return $this->_view->publicHref($this->_config['images'] .
+            $this->_config['theme'] . '/' . $file);
+    }
+
+    /**
+     *
+     * Returns the name of the jQuery theme in use.
+     *
+     * This is useful to set a class for HTML elements using the configured
+     * theme.
+     *
+     * @return string Theme name.
+     *
+     */
+    public function getTheme()
+    {
+        return $this->_config['theme'];
     }
 
     /**
