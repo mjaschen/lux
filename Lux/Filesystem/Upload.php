@@ -2,33 +2,33 @@
 /**
  *
  * Upload manager
- * 
+ *
  * @category Lux
- * 
+ *
  * @package Lux_Filesystem
- * 
+ *
  * @subpackage Lux_Filesystem_Upload
- * 
+ *
  * @author Rodrigo Moraes <rodrigo.moraes@gmail.com>
- * 
+ *
  * @author Antti Holvikari <anttih@gmail.com>
- * 
+ *
  * @license http://opensource.org/licenses/bsd-license.php BSD
- * 
+ *
  * @version $Id$
- * 
+ *
  */
 
 /**
  *
  * Upload manager
- * 
+ *
  * @category Lux
- * 
+ *
  * @package Lux_Filesystem
- * 
+ *
  * @subpackage Lux_Filesystem_Upload
- * 
+ *
  */
 class Lux_Filesystem_Upload extends Solar_Base
 {
@@ -45,7 +45,17 @@ class Lux_Filesystem_Upload extends Solar_Base
      * : (string) Destination path.
      *
      * `extensions`
-     * : (array) Allowed extensions => mime types.
+     * : (array) A map with allowed extensions and the correspondent valid
+     * mime-types. Example:
+     *
+     * {{code: php
+     *     $valid  = array(
+     *         'gif'  => 'image/gif',
+     *         'jpg'  => array('image/jpeg', 'image/pjpeg'),
+     *         'jpeg' => array('image/jpeg', 'image/pjpeg'),
+     *         'png'  => 'image/x-png',
+     *     );
+     * }}
      *
      * `max_size`
      * : (int) Maximum allowed file size.
@@ -117,42 +127,42 @@ class Lux_Filesystem_Upload extends Solar_Base
     {
         // Sets the file and extension.
         $this->_setFile($file);
-        
+
         // Set the specification.
         $this->_setSpec($spec);
-        
+
         if(is_uploaded_file($this->_file['tmp_name'])) {
             // validate extension, mime-type and size
             $this->_validateExtension();
             $this->_validateMimeType();
             $this->_validateSize();
         }
-        
+
         // Add the destination file name to the spec.
         $this->_spec['file_name'] = $this->_file_name;
-        
+
         return $this->_spec;
     }
-    
+
     /**
-     * 
+     *
      * Move file to destination
-     * 
+     *
      * @return void
-     * 
+     *
      */
     public function moveFile()
     {
         $this->_validateFile();
         $this->_validateDir();
-        
+
         // Formats the file name.
         $this->_formatFileName();
-        
+
         $destination = $this->_spec['destination']
                      . DIRECTORY_SEPARATOR
                      . $this->_file_name;
-        
+
         // Move file and chmod.
         if(@move_uploaded_file($this->_file['tmp_name'], $destination)) {
             @chmod($destination, $this->_spec['permission']);
@@ -160,19 +170,19 @@ class Lux_Filesystem_Upload extends Solar_Base
             throw $this->_exception('ERR_MOVE');
         }
     }
-    
+
     /**
-     * 
+     *
      * Get info about the upload
-     * 
+     *
      * @return void
-     * 
+     *
      */
     public function getTmpFileInfo()
     {
         return $this->_file;
     }
-    
+
     /**
      *
      * Sets specifications for each uploaded file.
@@ -188,9 +198,14 @@ class Lux_Filesystem_Upload extends Solar_Base
             $this->_spec = $this->_config;
         }
 
-        // Convert all allowed extensions to lower case.
-        $this->_spec['extensions'] = array_map('strtolower',
-            $this->_spec['extensions']);
+        // Convert extensions and myme-types to lower case.
+        $ext = array();
+
+        foreach($this->_spec['extensions'] as $name => $mime) {
+            $ext[strtolower($name)] = array_map('strtolower', (array) $mime);
+        }
+
+        $this->_spec['extensions'] = $ext;
     }
 
     /**
@@ -246,7 +261,7 @@ class Lux_Filesystem_Upload extends Solar_Base
      *
      * Validates file extension.
      *
-     * @return bool True if valid, false if not.
+     * Throws an exception if it doesn't validate.
      *
      */
     protected function _validateExtension()
@@ -260,12 +275,14 @@ class Lux_Filesystem_Upload extends Solar_Base
      *
      * Validates file mime type.
      *
-     * @return bool True if valid, false if not.
+     * Throws an exception if it doesn't validate.
      *
      */
     protected function _validateMimeType()
     {
-        if(!in_array($this->_file['type'], $this->_spec['extensions'])) {
+        $mime_types = (array) $this->_spec['extensions'][$this->_extension];
+
+        if(!in_array($this->_file['type'], $mime_types)) {
             throw $this->_exception('ERR_FILE_TYPE', $this->_file['type']);
         }
     }
@@ -274,7 +291,7 @@ class Lux_Filesystem_Upload extends Solar_Base
      *
      * Validates file size.
      *
-     * @return bool True if valid, false if not.
+     * Throws an exception if it doesn't validate.
      *
      */
     protected function _validateSize()
@@ -288,7 +305,7 @@ class Lux_Filesystem_Upload extends Solar_Base
      *
      * Validates that the destination directory exists and is writable.
      *
-     * @return bool True if valid, false if not.
+     * Throws an exception if it doesn't validate.
      *
      */
     protected function _validateDir()
@@ -307,7 +324,7 @@ class Lux_Filesystem_Upload extends Solar_Base
      * Validates, if the destination file exists, that it can be replaced
      * and is writable.
      *
-     * @return bool True if valid, false if not.
+     * Throws an exception if it doesn't validate.
      *
      */
     protected function _validateFile()
