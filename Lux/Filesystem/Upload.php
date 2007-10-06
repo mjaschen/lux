@@ -73,7 +73,7 @@ class Lux_Filesystem_Upload extends Solar_Base
         'extensions'  => array(),
         'max_size'    => 40960,
         'replace'     => false,
-        'permission'  => '0444',
+        'permission'  => 0444,
     );
 
     /**
