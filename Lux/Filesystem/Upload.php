@@ -114,8 +114,10 @@ class Lux_Filesystem_Upload extends Solar_Base
 
     /**
      *
-     * Executes the upload.
+     * Initializes the upload.
      *
+     * Validates that the upload is infact an uploaded file
+     * 
      * @param array $file Posted file from $_FILE.
      *
      * @param array $spec Options for the uploaded file, merged with the config.
@@ -282,7 +284,7 @@ class Lux_Filesystem_Upload extends Solar_Base
     {
         $mime_types = (array) $this->_spec['extensions'][$this->_extension];
 
-        if(!in_array($this->_file['type'], $mime_types)) {
+        if(! in_array($this->_file['type'], $mime_types)) {
             throw $this->_exception('ERR_FILE_TYPE', $this->_file['type']);
         }
     }
@@ -315,7 +317,7 @@ class Lux_Filesystem_Upload extends Solar_Base
         if(!file_exists($path)) {
             throw $this->_exception('ERR_DIR_NOT_FOUND', $path);
         } elseif(!is_writable($path)) {
-            throw $this->_exception('ERR_DIR_PERMISSION', $path);
+            throw $this->_exception('ERR_DIR_PERMISSIONS', $path);
         }
     }
 
