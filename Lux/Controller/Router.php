@@ -78,15 +78,6 @@ class Lux_Controller_Router extends Solar_Controller_Front
      *     );
      * }}
      *
-     * `module_key`
-     * : (string) Key for a module definition in routes.
-     *
-     * `controller_key`
-     * : (string) Key for a controller definition in routes.
-     *
-     * `action_key`
-     * : (string) Key for an action definition in routes.
-     *
      * `compat`
      * : (bool) If true, shift the controller/action name from the uri path
      *   before assing it to the page controller, when using routes.
@@ -101,16 +92,10 @@ class Lux_Controller_Router extends Solar_Controller_Front
      *
      */
     protected $_Lux_Controller_Router = array(
-        // Default route class and routes defined in config.
-        'route_class'    => 'Lux_Controller_Route_Route',
-        'routes'         => null,
-        // Route keys.
-        'module_key'     => 'module',
-        'controller_key' => 'controller',
-        'action_key'     => 'action',
-        // Routes compatibility with Solar_Controller_Front.
-        'compat'         => true,
-        'add_default'    => false,
+        'route_class' => 'Lux_Controller_Route_Route',
+        'routes'      => null,
+        'compat'      => true,
+        'add_default' => false,
     );
 
     /**
@@ -203,24 +188,24 @@ class Lux_Controller_Router extends Solar_Controller_Front
      *
      * @param Solar_Uri_Action $uri An action URI for the front controller.
      *
-     * @param array $params Parameters from the current route.
+     * @param array $params Parameters from the matched route.
      *
      * @return string The output of the page action.
      *
      */
     protected function _route($uri, $params)
     {
-        if(!isset($params[$this->_config['controller_key']])) {
-            // No controller. Go back to Solar_Controller_Front.
+        if(!isset($params['controller'])) {
+            // No controller is defined. Go back to Solar_Controller_Front.
             return parent::fetch($uri);
         }
 
         // Set controller.
-        $page = ucfirst($params[$this->_config['controller_key']]);
+        $page = ucfirst($params['controller']);
 
-        if(isset($params[$this->_config['module_key']])) {
-            // Set module.
-            $page = ucfirst($params[$this->_config['module_key']]) . '_' . $page;
+        if(isset($params['module'])) {
+            // Prepend the module name.
+            $page = ucfirst($params['module']) . '_' . $page;
         }
 
         // Try to get a class from the module/controller combination.
@@ -236,13 +221,14 @@ class Lux_Controller_Router extends Solar_Controller_Front
             array_shift($uri->path);
         }
 
-        if(isset($params[$this->_config['action_key']])) {
+        if(isset($params['action'])) {
             if($this->_config['compat']) {
                 // Compatibility: remove the action from the top of the path.
                 array_shift($uri->path);
             }
+
             // Add the action value taken from the route.
-            array_unshift($uri->path, $params[$this->_config['action_key']]);
+            array_unshift($uri->path, $params['action']);
         }
 
         // Set the route parameters.
