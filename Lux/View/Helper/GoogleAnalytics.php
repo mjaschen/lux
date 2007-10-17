@@ -1,31 +1,31 @@
 <?php
 /**
- *
- * Factory helper for flexible pagination.
- *
+ * 
+ * Helper for tracking sites with Google Analytics
+ * 
  * @category Lux
- *
+ * 
  * @package Lux_View
- *
+ * 
  * @author Antti Holvikari <anttih@gmail.com>
- *
+ * 
  * @license http://opensource.org/licenses/bsd-license.php BSD
- *
+ * 
  * @version $Id$
- *
+ * 
  */
 
 /**
  *
- * Factory helper for flexible pagination.
+ * Helper for tracking sites with Google Analytics
  *
  * @category Lux
  *
  * @package Lux_View
  *
  */
-class Lux_View_Helper_GoogleAnalytics extends Solar_View_Helper
-{
+class Lux_View_Helper_GoogleAnalytics extends Solar_View_Helper {
+    
     /**
      *
      * User-provided configuration values. Keys are...
