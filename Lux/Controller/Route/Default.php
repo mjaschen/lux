@@ -32,7 +32,7 @@
  * @subpackage Lux_Controller_Route
  *
  */
-class Lux_Controller_Route_Route extends Solar_Base
+class Lux_Controller_Route_Default extends Solar_Base
 {
     /**
      *
@@ -53,7 +53,7 @@ class Lux_Controller_Route_Route extends Solar_Base
      * @var array
      *
      */
-    protected $_Lux_Controller_Route_Route = array(
+    protected $_Lux_Controller_Route_Default = array(
         'route'    => null,
         'defaults' => array(),
         'reqs'     => array(),

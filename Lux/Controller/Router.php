@@ -52,7 +52,7 @@ class Lux_Controller_Router extends Solar_Controller_Front
      *
      * `routes`
      * : (array) Routes definitions in an array format. Format for the default
-     * route class (Lux_Controller_Route_Route) is:
+     * route class (Lux_Controller_Route_Default) is:
      *
      * (string) name => array(
      *     'route'        => (string) map,
@@ -88,7 +88,7 @@ class Lux_Controller_Router extends Solar_Controller_Front
      *
      */
     protected $_Lux_Controller_Router = array(
-        'route_class' => 'Lux_Controller_Route_Route',
+        'route_class' => 'Lux_Controller_Route_Default',
         'routes'      => null,
         'compat'      => true,
     );
@@ -246,7 +246,7 @@ class Lux_Controller_Router extends Solar_Controller_Front
      *
      * @param string $name Route name.
      *
-     * @return Lux_Controller_Route_Route.
+     * @return object Route instance.
      *
      */
     public function getRoute($name)
@@ -262,7 +262,7 @@ class Lux_Controller_Router extends Solar_Controller_Front
      *
      * Returns the currently matched route.
      *
-     * @return Lux_Controller_Route_Route.
+     * @return object Route instance.
      *
      */
     public function getCurrentRoute()
@@ -348,6 +348,7 @@ class Lux_Controller_Router extends Solar_Controller_Front
     public function addRoute($name, $spec, $class = null)
     {
         if(is_array($spec)) {
+            // Create a new route.
             if(isset($spec['route_class'])) {
                 // Use the class set in the spec, then remove it.
                 $class = $spec['route_class'];
@@ -367,9 +368,9 @@ class Lux_Controller_Router extends Solar_Controller_Front
      *
      * Adds a collection of routes.
      *
-     * @param array $routes Named routes: 'name' => spec or Route object.
+     * @param array $routes Named routes: 'name' => array() | Route object.
      *
-     * @param string $class Use this class to set the routes, if using a spec.
+     * @param string $class Class to build the routes, if using an array spec.
      *
      */
     public function addRoutes($routes, $class = null)
