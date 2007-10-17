@@ -51,7 +51,8 @@ class Lux_Controller_Router extends Solar_Controller_Front
      * : (string) Default class used to build routes.
      *
      * `routes`
-     * : (array) Routes definitions in an array format. Format is:
+     * : (array) Routes definitions in an array format. Format for the default
+     * route class (Lux_Controller_Route_Route) is:
      *
      * (string) name => array(
      *     'route'        => (string) map,
@@ -96,15 +97,6 @@ class Lux_Controller_Router extends Solar_Controller_Front
      * : (bool) True to add a default ":controller/:action/*" route, compatible
      *   with Solar apps.
      *
-     * `cache`
-     * : (dependency) A Solar_Sql dependency to cache routes.
-     *
-     * `cache_key`
-     * : (string) A key used to cache routes. If null, will use the host name.
-     *
-     * `delete_cache`
-     * : (bool) True to force a cache deletion.
-     *
      * @var array
      *
      */
@@ -119,10 +111,6 @@ class Lux_Controller_Router extends Solar_Controller_Front
         // Routes compatibility with Solar_Controller_Front.
         'compat'         => true,
         'add_default'    => false,
-        // Cache for routes.
-        'cache'          => null,
-        'cache_key'      => null,
-        'delete_cache'   => false,
     );
 
     /**
@@ -136,7 +124,7 @@ class Lux_Controller_Router extends Solar_Controller_Front
 
     /**
      *
-     * Currently matched route.
+     * Currently matched route name.
      *
      * @var string The route name.
      *
@@ -151,48 +139,6 @@ class Lux_Controller_Router extends Solar_Controller_Front
      *
      */
     protected $_params;
-
-    /**
-     *
-     * Cache to store routes between page loads.
-     *
-     * @var Solar_Cache
-     *
-     */
-    protected $_cache;
-
-    /**
-     *
-     * Constructor.
-     *
-     * @param array $config User-provided configuration values.
-     *
-     */
-    public function __construct($config)
-    {
-        // Do the "real" construction.
-        parent::__construct($config);
-
-        if($this->_config['cache']) {
-            // Get the optional dependency object for caching routes.
-            $this->_cache = Solar::dependency(
-                'Solar_Cache',
-                $this->_config['cache']
-            );
-
-            if(!$this->_config['cache_key']) {
-                $uri = Solar::factory('Solar_Uri_Action');
-                // Create a cache key using the host name.
-                $this->_config['cache_key'] = 'Lux_Controller_Router/' .
-                    $uri->host;
-            }
-
-            // Force cache deletion.
-            if($this->_config['delete_cache']) {
-                $this->deleteCache();
-            }
-        }
-    }
 
     /**
      *
@@ -220,26 +166,14 @@ class Lux_Controller_Router extends Solar_Controller_Front
             ));
         }
 
-        // Set routes stored in cache?
-        if($this->_cache) {
-            $cached = $this->_setCachedRoutes();
-        } else {
-            $cached = false;
-        }
-
         // Add a ":controller/:action/*" route, compatible with Solar apps.
-        if(!$cached && $this->_config['add_default']) {
+        if($this->_config['add_default']) {
             $this->_addDefaultRoutes();
         }
 
         // Add routes defined in config.
-        if(!$cached && $this->_config['routes']) {
+        if($this->_config['routes']) {
             $this->addRoutes($this->_config['routes']);
-        }
-
-        // Save routes to cache?
-        if(!$cached && $this->_cache && !$this->_config['delete_cache']) {
-            $this->_cache->save($this->_config['cache_key'], $this->_routes);
         }
 
         // Are we using routes?
@@ -316,8 +250,10 @@ class Lux_Controller_Router extends Solar_Controller_Front
 
         // Instantiate the page controller class.
         $obj = Solar::factory($class);
+
         // Inject the front controller.
         $obj->setFrontController($this);
+
         // Fetch contents.
         return $obj->fetch($uri);
     }
@@ -386,7 +322,7 @@ class Lux_Controller_Router extends Solar_Controller_Front
      *
      * Returns the parameters for the currently matched route.
      *
-     * @return array Route parameters.
+     * @return array Matched route parameters.
      *
      */
     public function getParams()
@@ -410,39 +346,6 @@ class Lux_Controller_Router extends Solar_Controller_Front
     public function setRoutes($routes)
     {
         $this->_routes = (array) $routes;
-    }
-
-    /**
-     *
-     * Sets routes fetched from cache, if available.
-     *
-     * @return bool True if a cache was found, false otherwise.
-     *
-     */
-    protected function _setCachedRoutes()
-    {
-        $routes = $this->_cache->fetch($this->_config['cache_key']);
-
-        if($routes) {
-            $this->setRoutes($routes);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     *
-     * Sets routes fetched from cache, if available.
-     *
-     * @return bool True if a cache was found, false otherwise.
-     *
-     */
-    public function deleteCache()
-    {
-        if($this->_cache) {
-            $this->_cache->delete($this->_config['cache_key']);
-        }
     }
 
     // -------------------------------------------------------------------------
