@@ -5,8 +5,8 @@
  *
  * This is an extended Solar_Controller_Front which adds the possibility to
  * use RubyOnRails-like "routes", allowing virtually any URI scheme to be used
- * in Solar apps. If no route is defined, it falls back gracefully to Solar's
- * default front controller.
+ * in Solar apps. If no route is defined, it falls back to Solar's default
+ * front controller.
  *
  * The logic to find a matching route was adapted from Zend Framework's
  * Zend_Controller_Router_Rewrite. The fetch and route logic was adapted from
@@ -84,10 +84,6 @@ class Lux_Controller_Router extends Solar_Controller_Front
      *   This makes routes compatible with existing Solar apps, as the $_info
      *   array will be the same.
      *
-     * `add_default`
-     * : (bool) True to add a default ":controller/:action/*" route, compatible
-     *   with Solar apps.
-     *
      * @var array
      *
      */
@@ -95,7 +91,6 @@ class Lux_Controller_Router extends Solar_Controller_Front
         'route_class' => 'Lux_Controller_Route_Route',
         'routes'      => null,
         'compat'      => true,
-        'add_default' => false,
     );
 
     /**
@@ -149,11 +144,6 @@ class Lux_Controller_Router extends Solar_Controller_Front
             $uri = Solar::factory('Solar_Uri_Action', array(
                 'uri' => (string) $spec,
             ));
-        }
-
-        // Add a ":controller/:action/*" route, compatible with Solar apps.
-        if($this->_config['add_default']) {
-            $this->_addDefaultRoutes();
         }
 
         // Add routes defined in config.
@@ -387,24 +377,5 @@ class Lux_Controller_Router extends Solar_Controller_Front
         foreach ((array) $routes as $name => $route) {
             $this->addRoute($name, $route, $class);
         }
-    }
-
-    /**
-     *
-     * Adds a default route to the routes list.
-     *
-     */
-    protected function _addDefaultRoutes()
-    {
-        // Route for Solar apps compatibility.
-        $config = array(
-            'route'    => ':controller/:action/*',
-            'defaults' => array(
-                'controller' => 'hello',
-                'action'     => 'main'
-            )
-        );
-
-        $this->addRoute('default', $config);
     }
 }
