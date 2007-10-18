@@ -76,7 +76,7 @@ class Lux_Controller_Router extends Solar_Controller_Front
      * }}
      *
      * `route_class`
-     * : (string) Default class used to build routes.
+     * : (string) Default route class.
      *
      * `compat`
      * : (bool) If true, shift the controller/action names from the uri path
@@ -89,8 +89,8 @@ class Lux_Controller_Router extends Solar_Controller_Front
      *
      */
     protected $_Lux_Controller_Router = array(
-        'route_class' => 'Lux_Controller_Route_Default',
         'routes'      => null,
+        'route_class' => 'Lux_Controller_Route_Default',
         'compat'      => true,
     );
 
