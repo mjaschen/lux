@@ -65,7 +65,7 @@ class Lux_Controller_Router extends Solar_Controller_Front
      *
      * {{code: php
      *     $routes = array();
-     *     // Blog entries and archives
+     *     // Blog archives
      *     $routes['blog_archive'] = array(
      *         'route'    => 'posts/archive/:year/:month/:day',
      *         'defaults' => array(
@@ -79,10 +79,11 @@ class Lux_Controller_Router extends Solar_Controller_Front
      * }}
      *
      * `compat`
-     * : (bool) If true, shift the controller/action name from the uri path
-     *   before assing it to the page controller, when using routes.
+     * : (bool) If true, shift the controller/action names from the uri path
+     *   before passing it to the page controller, when using routes.
      *   This makes routes compatible with existing Solar apps, as the $_info
-     *   array will be the same.
+     *   array in the page controller will be the same. Also the paths are not
+     *   necessary there, so it is a good idea to keep this set to true.
      *
      * @var array
      *
