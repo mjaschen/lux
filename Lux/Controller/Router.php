@@ -47,12 +47,9 @@ class Lux_Controller_Router extends Solar_Controller_Front
      *
      * Keys are ...
      *
-     * `route_class`
-     * : (string) Default class used to build routes.
-     *
      * `routes`
-     * : (array) Routes definitions in an array format. Format for the default
-     * route class (Lux_Controller_Route_Default) is:
+     * : (array) Routes definitions in an array format. An example for the
+     * default route class, Lux_Controller_Route_Default, is:
      *
      * (string) name => array(
      *     'route'        => (string) map,
@@ -77,6 +74,9 @@ class Lux_Controller_Router extends Solar_Controller_Front
      *          ),
      *     );
      * }}
+     *
+     * `route_class`
+     * : (string) Default class used to build routes.
      *
      * `compat`
      * : (bool) If true, shift the controller/action names from the uri path
@@ -110,7 +110,7 @@ class Lux_Controller_Router extends Solar_Controller_Front
      * @var string The route name.
      *
      */
-    protected $_current_route = null;
+    protected $_matched = null;
 
     /**
      *
@@ -162,7 +162,7 @@ class Lux_Controller_Router extends Solar_Controller_Front
                 $params = $route->match($path);
                 if($params) {
                     // Found a route. Don't proceed with Solar_Controller_Front.
-                    $this->_current_route = $name;
+                    $this->_matched = $name;
                     return $this->_route($uri, $params);
                 }
             }
@@ -175,7 +175,7 @@ class Lux_Controller_Router extends Solar_Controller_Front
     /**
      *
      * Fetches the output of a module/controller/action/info specification URI
-     * using the current matched route.
+     * using the currently matched route.
      *
      * @param Solar_Uri_Action $uri An action URI for the front controller.
      *
@@ -237,7 +237,7 @@ class Lux_Controller_Router extends Solar_Controller_Front
 
     // -------------------------------------------------------------------------
     //
-    // Get routes.
+    // Get routes and related.
     //
     // -------------------------------------------------------------------------
 
@@ -245,42 +245,21 @@ class Lux_Controller_Router extends Solar_Controller_Front
      *
      * Returns a defined route.
      *
-     * @param string $name Route name.
+     * @param string $name Route name. If not defined, returns the currently
+     * matched route, if any.
      *
      * @return object Route instance.
      *
      */
-    public function getRoute($name)
+    public function getRoute($name = null)
     {
-        if(isset($this->_routes[$name])) {
+        if($name && isset($this->_routes[$name])) {
             return $this->_routes[$name];
+        } elseif($this->_matched && isset($this->_routes[$this->_matched])) {
+            return $this->_routes[$this->_matched];
         }
 
         return null;
-    }
-
-    /**
-     *
-     * Returns the currently matched route.
-     *
-     * @return object Route instance.
-     *
-     */
-    public function getCurrentRoute()
-    {
-        return $this->getRoute($this->_current_route);
-    }
-
-    /**
-     *
-     * Returns the currently matched route name.
-     *
-     * @return string The route name.
-     *
-     */
-    public function getCurrentRouteName()
-    {
-        return $this->_current_route;
     }
 
     /**
@@ -293,6 +272,18 @@ class Lux_Controller_Router extends Solar_Controller_Front
     public function getRoutes()
     {
         return $this->_routes;
+    }
+
+    /**
+     *
+     * Returns the currently matched route name.
+     *
+     * @return string The route name.
+     *
+     */
+    public function getMatched()
+    {
+        return $this->_matched;
     }
 
     /**
@@ -310,24 +301,6 @@ class Lux_Controller_Router extends Solar_Controller_Front
     // -------------------------------------------------------------------------
     //
     // Set routes.
-    //
-    // -------------------------------------------------------------------------
-
-    /**
-     *
-     * Sets all routes at once.
-     *
-     * @param array List of routes.
-     *
-     */
-    public function setRoutes($routes)
-    {
-        $this->_routes = (array) $routes;
-    }
-
-    // -------------------------------------------------------------------------
-    //
-    // Add routes.
     //
     // -------------------------------------------------------------------------
 
@@ -379,5 +352,17 @@ class Lux_Controller_Router extends Solar_Controller_Front
         foreach ((array) $routes as $name => $route) {
             $this->addRoute($name, $route, $class);
         }
+    }
+
+    /**
+     *
+     * Sets all routes at once.
+     *
+     * @param array List of route objects keyed by route name.
+     *
+     */
+    public function setRoutes($routes)
+    {
+        $this->_routes = (array) $routes;
     }
 }
