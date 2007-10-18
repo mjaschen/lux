@@ -113,13 +113,8 @@ class Lux_View_Helper_RouteUri extends Solar_View_Helper
             return $this;
         }
 
-        if(!$name) {
-            // Get the current route.
-            $route = $this->_front->getCurrentRoute();
-        } else {
-            // Get the named route.
-            $route = $this->_front->getRoute($name);
-        }
+        // Get the named route.
+        $route = $this->_front->getRoute($name);
 
         if(!$route) {
             // No route found.
