@@ -12,7 +12,7 @@
  * 
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
- * @version $Id: Session.php 2365 2007-03-19 14:19:44Z pmjones $
+ * @version $Id$
  * 
  */
 
