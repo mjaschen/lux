@@ -161,8 +161,16 @@ class Test_Lux_Controller_Route_RegexHost extends Solar_Test
 
         $params = $route->match('blog/archives/2007/08');
 
+        // Returned values from a matching route result in an identical uri,
+        // when assembled. However with RegexHost it can also have the hostname.
         $this->assertSame($route->assemble($params),
             'http://something.mydomain.com/blog/archives/2007/08');
+
+        // Test another subdomain, different from current HTTP_HOST.
+        $params['subdomain'] = 'something_else';
+
+        $this->assertSame($route->assemble($params),
+            'http://something_else.mydomain.com/blog/archives/2007/08');
     }
 
     // -----------------------------------------------------------------
