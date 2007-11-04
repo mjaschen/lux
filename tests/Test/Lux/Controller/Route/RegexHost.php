@@ -1,7 +1,7 @@
 <?php
 class Test_Lux_Controller_Route_RegexHost extends Solar_Test
 {
-    public function testStaticMatchWithHost()
+    public function testStaticMatch()
     {
         $request = Solar_Registry::get('request');
 
@@ -25,7 +25,7 @@ class Test_Lux_Controller_Route_RegexHost extends Solar_Test
         $this->assertSame($params, false);
     }
 
-    public function testStaticMatchWithHostAndIgnore()
+    public function testStaticMatchWithIgnore()
     {
         $request = Solar_Registry::get('request');
 
@@ -65,7 +65,7 @@ class Test_Lux_Controller_Route_RegexHost extends Solar_Test
         $this->assertSame($params, false);
     }
 
-    public function testMappedMatchWithHost()
+    public function testMappedMatch()
     {
         $config = array(
             // Matches 4 digits + / + 2 digits
@@ -97,7 +97,7 @@ class Test_Lux_Controller_Route_RegexHost extends Solar_Test
         $this->assertSame($params, false);
     }
 
-    public function testMappedMatchWithHostAndHostMap()
+    public function testMappedMatchWithHostMap()
     {
         $config = array(
             // Matches up to 3 paths
