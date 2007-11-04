@@ -1,6 +1,15 @@
 <?php
 $config = array();
 
+$config['Solar'] = array(
+    'ini_set' => array(
+        'error_reporting' => (E_ALL|E_STRICT),
+        'display_errors'  => true,
+        'html_errors'     => true,
+        'date.timezone'   => 'America/Chicago',
+    ),
+);
+
 $config['Solar_Debug_Var']['output'] = 'text';
 
 $config['Solar_Sql'] = array(
