@@ -20,4 +20,5 @@ return array(
     'ERR_PART_IS_NOT_SPECIFIED'       => 'Route part is not specified.',
     'ERR_REVERSE_ROUTE_NOT_SPECIFIED' => 'Reverse route is not specified.',
     'ERR_ASSEMBLE_FAILED'             => 'URI assemble failed.',
+    'ERR_HOST_REVERSE_ROUTE_NOT_SPECIFIED' => 'Reverse route for the host is not specified.',
 );
