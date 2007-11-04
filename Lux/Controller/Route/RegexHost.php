@@ -113,7 +113,11 @@ class Lux_Controller_Route_RegexHost extends Lux_Controller_Route_Regex
             return false;
         }
 
-        return $this->_getMappedHost($values, $host_values);
+        if ($this->_config['host_regex']) {
+            return $this->_getMappedHost($values, $host_values);
+        }
+
+        return $values;
     }
 
     /**
