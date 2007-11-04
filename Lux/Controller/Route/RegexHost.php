@@ -113,7 +113,8 @@ class Lux_Controller_Route_RegexHost extends Lux_Controller_Route_Regex
             return false;
         }
 
-        if ($this->_config['host_regex']) {
+        if ($this->_config['host_regex'] && $this->_config['host_map']) {
+            // Override or set matches found in the hostname.
             return $this->_getMappedHost($values, $host_values);
         }
 
@@ -133,10 +134,6 @@ class Lux_Controller_Route_RegexHost extends Lux_Controller_Route_Regex
      */
     protected function _getMappedHost($values, $host_values)
     {
-        if (!$this->_config['host_regex'] || !$this->_config['host_map']) {
-            return $values;
-        }
-
         $map = array_flip((array) $this->_config['host_map']);
 
         foreach($map as $key => $index) {
