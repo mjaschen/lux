@@ -46,14 +46,18 @@ class Lux_Controller_Route_RegexHost extends Lux_Controller_Route_Regex
      * : (string) Regex to match hostnames.
      *
      * `host_map`
-     * : (array) Keys to set in the resulted route, mapping to hostname matches.
-     * Can override keys defined in Lux_Controller_Route_Regex::match().
+     * : (array) Map hostname matches to keys to be set in the resulted map.
+     *   Can override values for keys defined in Lux_Controller_Route_Regex's,
+     *   map, if there are identical keys here and there, so use distinct keys
+     *   here.
      *
      * `host_reverse`
      * : (string) A string parsable by sprintf(), used to assemble the hostname.
      *
      * `host_ignore`
-     * : (string) A regex used to ignore matching hostnames.
+     * : (string) A regex used to ignore matching hostnames. The ignore rules
+     *   can also be set in 'host_regex' together with the rules for valid
+     *   hosts, but 'host_ignore' is kept as an option to make regex'es cleaner.
      *
      * @var array
      *
@@ -83,25 +87,19 @@ class Lux_Controller_Route_RegexHost extends Lux_Controller_Route_Regex
             $host = $request->server('HTTP_HOST');
 
             if ($this->_config['host_ignore']) {
-                $regex = '#^' . $this->_config['host_ignore'] . '$#ix';
+                $regex = '{^' . $this->_config['host_ignore'] . '$}ix';
                 if (preg_match($regex, $host)) {
                     // Regex matched a hostname that must be ignored.
                     return false;
                 }
             }
 
-            $regex = '#^' . $this->_config['host_regex'] . '$#ix';
+            $regex = '{^' . $this->_config['host_regex'] . '$}ix';
             $res = preg_match($regex, $host, $host_values);
 
             if (! $res) {
                 // Regex didn't match a valid hostname.
                 return false;
-            }
-
-            foreach ($host_values as $i => $value) {
-                if (!is_int($i) || $i === 0) {
-                    unset($host_values[$i]);
-                }
             }
         }
 
@@ -113,41 +111,19 @@ class Lux_Controller_Route_RegexHost extends Lux_Controller_Route_Regex
             return false;
         }
 
+        // 3. Add values from the hostname match to the results.
         if ($this->_config['host_regex'] && $this->_config['host_map']) {
-            // Override or set matches found in the hostname.
-            return $this->_getMappedHost($values, $host_values);
-        }
-
-        return $values;
-    }
-
-    /**
-     *
-     * Override or set matches found in the hostname.
-     *
-     * @param array $values Route matched values.
-     *
-     * @param array $host_values Matches found in the hostname.
-     *
-     * @return array Route results combined with hostname results.
-     *
-     */
-    protected function _getMappedHost($values, $host_values)
-    {
-        $map = array_flip((array) $this->_config['host_map']);
-
-        foreach($map as $key => $index) {
-            if (array_key_exists($index, $host_values)) {
-                $value = $host_values[$index];
-            } else {
-                $value = null;
+            // Override or set values using matches from the hostname.
+            foreach((array) $this->_config['host_map'] as $index => $key) {
+                if (array_key_exists($index, $host_values)) {
+                    $values[$key] = $host_values[$index];
+                } else {
+                    $values[$key] = null;
+                }
             }
-
-            // Override values with the ones from the host match
-            // or add new keys.
-            $values[$key] = $value;
         }
 
+        // Done.
         return $values;
     }
 
@@ -171,15 +147,8 @@ class Lux_Controller_Route_RegexHost extends Lux_Controller_Route_Regex
                 throw $this->_exception('ERR_HOST_REVERSE_ROUTE_NOT_SPECIFIED');
             }
 
-            // Switch current map to use the host map.
-            $temp_map = $this->_map;
-            $this->_map = (array) $this->_config['host_map'];
-
-            // Map the host related values.
-            $host_data = $this->_getMappedValues($data, true, false);
-
-            // Put the original map back.
-            $this->_map = $temp_map;
+            $host_map = (array) $this->_config['host_map'];
+            $host_data = $this->_getMappedValues($data, $host_map, true, false);
 
             // Replace the values in the reverse route.
             $res = @vsprintf($this->_config['host_reverse'], $host_data);

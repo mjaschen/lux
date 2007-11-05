@@ -122,7 +122,7 @@ class Lux_Controller_Route_Regex extends Solar_Base
         // Do the "real" construction.
         parent::__construct($config);
 
-        $this->_regex = '#^' . $this->_config['route'] . '$#ix';
+        $this->_regex = '{^' . $this->_config['route'] . '$}ix';
         $this->_defaults = (array) $this->_config['defaults'];
         $this->_map = (array) $this->_config['map'];
         $this->_reverse = $this->_config['reverse'];
@@ -143,7 +143,9 @@ class Lux_Controller_Route_Regex extends Solar_Base
         $path = trim(urldecode($path), '/');
         $res = preg_match($this->_regex, $path, $values);
 
-        if ($res === 0) return false;
+        if ($res === 0) {
+            return false;
+        }
 
         // array_filter_key()?
         // Why isn't this in a standard PHP function set yet? :)
@@ -155,8 +157,9 @@ class Lux_Controller_Route_Regex extends Solar_Base
 
         $this->_values = $values;
 
-        $values = $this->_getMappedValues($values);
-        $defaults = $this->_getMappedValues($this->_defaults, false, true);
+        $values = $this->_getMappedValues($values, $this->_map);
+        $defaults = $this->_getMappedValues($this->_defaults, $this->_map,
+            false, true);
 
         $return = $values + $defaults;
 
@@ -176,6 +179,8 @@ class Lux_Controller_Route_Regex extends Solar_Base
      *
      * @param array $values Indexed or associative array of values to map.
      *
+     * @param array $map Map to be used.
+     *
      * @param bool $reversed False means translation of index to association.
      * True means reverse.
      *
@@ -184,10 +189,10 @@ class Lux_Controller_Route_Regex extends Solar_Base
      * @return array An array of mapped values.
      *
      */
-    protected function _getMappedValues($values, $reversed = false,
+    protected function _getMappedValues($values, $map, $reversed = false,
         $preserve = false)
     {
-        if (count($this->_map) == 0) {
+        if (count($map) == 0) {
             return $values;
         }
 
@@ -195,10 +200,10 @@ class Lux_Controller_Route_Regex extends Solar_Base
 
         foreach ($values as $key => $value) {
             if (is_int($key) && !$reversed) {
-                if (array_key_exists($key, $this->_map)) {
-                    $index = $this->_map[$key];
+                if (array_key_exists($key, $map)) {
+                    $index = $map[$key];
                 } else {
-                    $index = array_search($key, $this->_map);
+                    $index = array_search($key, $map);
 
                     if($index === false) {
                         $index = $key;
@@ -207,12 +212,12 @@ class Lux_Controller_Route_Regex extends Solar_Base
                 $return[$index] = $values[$key];
             } elseif ($reversed) {
                 if(!is_int($key)) {
-                    $index = array_search($key, $this->_map, true);
+                    $index = array_search($key, $map, true);
                 } else {
                     $index = $key;
                 }
 
-                if (false !== $index) {
+                if ($index !== false) {
                     $return[$index] = $values[$key];
                 }
             } elseif ($preserve) {
@@ -239,8 +244,9 @@ class Lux_Controller_Route_Regex extends Solar_Base
             throw $this->_exception('ERR_REVERSE_ROUTE_NOT_SPECIFIED');
         }
 
-        $data = $this->_getMappedValues($data, true, false);
-        $data += $this->_getMappedValues($this->_defaults, true, false);
+        $data = $this->_getMappedValues($data, $this->_map, true, false);
+        $data += $this->_getMappedValues($this->_defaults, $this->_map,
+            true, false);
         $data += $this->_values;
 
         ksort($data);
