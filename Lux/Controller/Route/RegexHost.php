@@ -95,9 +95,7 @@ class Lux_Controller_Route_RegexHost extends Lux_Controller_Route_Regex
             }
 
             $regex = '{^' . $this->_config['host_regex'] . '$}ix';
-            $res = preg_match($regex, $host, $host_values);
-
-            if (! $res) {
+            if (! preg_match($regex, $host, $host_values)) {
                 // Regex didn't match a valid hostname.
                 return false;
             }
@@ -131,10 +129,9 @@ class Lux_Controller_Route_RegexHost extends Lux_Controller_Route_Regex
      *
      * Assembles a URL path defined by this route.
      *
-     * @param array $data An array of name (or index) and value pairs used as
-     * parameters.
+     * @param array $data An array of name and value pairs used as parameters.
      *
-     * @return string Route path with user submitted parameters.
+     * @return string URI path or full URI with user submitted parameters.
      *
      */
     public function assemble($data = array())
