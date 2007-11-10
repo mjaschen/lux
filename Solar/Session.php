@@ -8,11 +8,11 @@
  * 
  * @package Solar
  * 
- * @author Paul M. Jones <pmjones@solarphp.com>
+ * @author Antti Holvikari <anttih@gmail.com>
  * 
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
- * @version $Id: Session.php 2365 2007-03-19 14:19:44Z pmjones $
+ * @version $Id$
  * 
  */
 
@@ -22,17 +22,6 @@
  * flashes.
  * 
  * On instantiation, starts a session if one has not yet been started.
- * 
- * Instantiate this once for each class that wants access to $_SESSION
- * values.  It automatically segments $_SESSION by class name, so be 
- * sure to use setClass() (or the 'class' config key) to identify the
- * segment properly.
- * 
- * A "flash" is a session value that propagates only until it is read,
- * at which time it is removed from the session.  Taken from ideas 
- * popularized by Ruby on Rails, this is useful for forwarding
- * information and messages between page loads without using GET vars
- * or cookies.
  * 
  * @category Solar
  * 
@@ -47,9 +36,8 @@ class Solar_Session extends Solar_Base {
      * 
      * Keys are ...
      * 
-     * `class`
-     * : Store values in this top-level key in $_SESSION.  Default is
-     *   'Solar'.
+     * `adapter`
+     * : Session adapter which should be used
      * 
      * @var array
      * 
@@ -60,19 +48,7 @@ class Solar_Session extends Solar_Base {
     
     /**
      * 
-     * Constructor.
-     * 
-     * @param array $config User-defined configuration values.
-     * 
-     */
-    public function __construct($config = null)
-    {
-        parent::__construct($config);
-    }
-    
-    /**
-     * 
-     * undocumented function
+     * Solar factory
      * 
      * @return void
      * 
