@@ -39,8 +39,8 @@ abstract class Lux_Event_Loader_Adapter extends Solar_Base
         parent::__construct($config);
 
         // Register the plugin event handler, if not yet registered.
-        if(!Solar::isRegistered('event')) {
-            Solar::register('event', Solar::factory('Lux_Event_Handler'));
+        if(!Solar_Registry::exists('event')) {
+            Solar_Registry::set('event', Solar::factory('Lux_Event_Handler'));
         }
     }
 

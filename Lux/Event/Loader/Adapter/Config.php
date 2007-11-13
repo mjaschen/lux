@@ -70,7 +70,7 @@ class Lux_Event_Loader_Adapter_Config extends Lux_Event_Loader_Adapter
                 // Make the event name start with lower case.
                 $event[0] = strtolower($event[0]);
 
-                Solar::registry('event')->register($event, array($plugin, $method));
+                Solar_Registry::get('event')->register($event, array($plugin, $method));
             }
         }
     }
