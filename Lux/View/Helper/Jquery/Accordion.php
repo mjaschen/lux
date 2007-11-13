@@ -1,7 +1,7 @@
 <?php
 /**
  *
- *
+ * jQuery accordion helper.
  *
  * @category Lux
  *
@@ -14,17 +14,7 @@
  * @version $Id$
  *
  */
-
-/**
- *
- *
- *
- * @category Lux
- *
- * @package Lux_View_Helper
- *
- */
-class Lux_View_Helper_Jquery_Accordion extends Lux_View_Helper_Jquery_Base
+class Lux_View_Helper_Jquery_Accordion extends Solar_View_Helper
 {
     /**
      *
@@ -37,11 +27,24 @@ class Lux_View_Helper_Jquery_Accordion extends Lux_View_Helper_Jquery_Base
     {
         parent::__construct($config);
 
-        // Add scripts and CSS files.
-        $this->needsFile('jquery.dimensions.js');
-        $this->needsFile('ui.accordion.js');
+        $this->_view->jquery()
+            // Scripts
+            ->addScript('jquery.dimensions.js')
+            ->addScript('ui.accordion.js')
+            // Styles
+            ->addStyle('accordion.css');
+    }
 
-        $this->needsStyle($this->_config['theme'] .'.accordion.css');
+    /**
+     *
+     * Interface method.
+     *
+     * @return Lux_View_Helper_Jquery_Accordion
+     *
+     */
+    public function accordion()
+    {
+        return $this;
     }
 
     /**
@@ -54,15 +57,15 @@ class Lux_View_Helper_Jquery_Accordion extends Lux_View_Helper_Jquery_Base
      * to a JSON string.
      *
      */
-    public function accordion($selector, $config = null)
+    public function set($selector, $config = null)
     {
         if($config) {
             // Encode configuration.
-            $config = $this->json->encode($config);
+            $config = $this->_view->jquery()->json()->encode($config);
         }
 
         // Add inline script.
-        $script = '    $("' . $selector . '").accordion(' . $config . ');';
-        $this->addInlineScript($script);
+        $code = '$("' . $selector . '").accordion(' . $config . ');';
+        $this->_view->jquery()->addScriptInline($code);
     }
 }

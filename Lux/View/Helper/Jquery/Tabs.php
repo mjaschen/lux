@@ -14,17 +14,7 @@
  * @version $Id$
  *
  */
-
-/**
- *
- * Helper to build javascript tabs.
- *
- * @category Lux
- *
- * @package Lux_View_Helper
- *
- */
-class Lux_View_Helper_Jquery_Tabs extends Lux_View_Helper_Jquery_Base
+class Lux_View_Helper_Jquery_Tabs extends Solar_View_Helper
 {
     /**
      *
@@ -37,30 +27,47 @@ class Lux_View_Helper_Jquery_Tabs extends Lux_View_Helper_Jquery_Base
     {
         parent::__construct($config);
 
-        // Add scripts and CSS files.
-        $this->needsFile('ui.tabs.js');
-        $this->needsStyle($this->_config['theme'] . '.tabs.css');
+        $this->_view->jquery()
+            // Scripts
+            ->addScript('ui.tabs.js')
+            // Styles
+            ->addStyle('tabs.css');
     }
 
     /**
      *
-     * Includes the tabs initialization script.
+     * Interface method.
+     *
+     * @return Lux_View_Helper_Jquery_Tabs
+     *
+     */
+    public function tabs()
+    {
+        return $this;
+    }
+
+    /**
+     *
+     * Sets the initialization script.
      *
      * @param string $selector A suitable HTML selector for jQuery.
      *
      * @param array $config Tabs configuration options. Will be encoded
      * to a JSON string.
      *
+     * @param array $deQuote Array of keys whose values should **not** be
+     * quoted in the JSON encoded string.
+     *
      */
-    public function tabs($selector, $config = null)
+    public function set($selector, $config = null, $deQuote = array())
     {
         if($config) {
             // Encode configuration.
-            $config = $this->json->encode($config);
+            $config = $this->_view->jquery()->json()->encode($config, $deQuote);
         }
 
         // Add inline script.
-        $script = '    $("' . $selector . '").tabs(' . $config . ');';
-        $this->addInlineScript($script);
+        $code = '$("' . $selector . '").tabs(' . $config . ');';
+        $this->_view->jquery()->addScriptInline($code);
     }
 }

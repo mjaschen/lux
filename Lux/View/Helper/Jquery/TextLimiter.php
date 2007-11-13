@@ -17,18 +17,7 @@
  * @version $Id$
  *
  */
-
-/**
- *
- * Activate the maxLenght property in input fields, limiting the number of
- * characters they accept.
- *
- * @category Lux
- *
- * @package Lux_View_Helper
- *
- */
-class Lux_View_Helper_Jquery_TextLimiter extends Lux_View_Helper_Jquery_Base
+class Lux_View_Helper_Jquery_TextLimiter extends Solar_View_Helper
 {
     /**
      *
@@ -41,8 +30,19 @@ class Lux_View_Helper_Jquery_TextLimiter extends Lux_View_Helper_Jquery_Base
     {
         parent::__construct($config);
 
-        // Add scripts and CSS files.
-        $this->needsFile('jquery.textLimiter.js');
+        $this->_view->jquery()->addScript('jquery.textLimiter.js');
+    }
+
+    /**
+     *
+     * Interface method.
+     *
+     * @return Lux_View_Helper_Jquery_TextLimiter
+     *
+     */
+    public function textLimiter()
+    {
+        return $this;
     }
 
     /**
@@ -55,10 +55,10 @@ class Lux_View_Helper_Jquery_TextLimiter extends Lux_View_Helper_Jquery_Base
      * @return void
      *
      */
-    public function textLimiter($selector)
+    public function set($selector)
     {
         // Add inline script.
-        $script = '    $("' . $selector . '").textLimiter();';
-        $this->addInlineScript($script);
+        $code = '$("' . $selector . '").textLimiter();';
+        $this->_view->jquery()->addScriptInline($code);
     }
 }

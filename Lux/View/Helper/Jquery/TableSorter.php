@@ -15,18 +15,7 @@
  * @version $Id$
  *
  */
-
-/**
- *
- * Javascript helper to turn a standard HTML table with THEAD and TBODY tags
- * into a sortable table without page refreshes.
- *
- * @category Lux
- *
- * @package Lux_View_Helper
- *
- */
-class Lux_View_Helper_Jquery_TableSorter extends Lux_View_Helper_Jquery_Base
+class Lux_View_Helper_Jquery_TableSorter extends Solar_View_Helper
 {
     /**
      *
@@ -39,9 +28,23 @@ class Lux_View_Helper_Jquery_TableSorter extends Lux_View_Helper_Jquery_Base
     {
         parent::__construct($config);
 
-        // Add scripts and CSS files.
-        $this->needsFile('ui.tablesorter.js');
-        $this->needsStyle($this->_config['theme'] . '.tablesorter.css');
+        $this->_view->jquery()
+            // Scripts
+            ->addScript('ui.tablesorter.js')
+            // Styles
+            ->addStyle('tablesorter.css');
+    }
+
+    /**
+     *
+     * Interface method.
+     *
+     * @return Lux_View_Helper_Jquery_TableSorter
+     *
+     */
+    public function tableSorter()
+    {
+        return $this;
     }
 
     /**
@@ -54,15 +57,15 @@ class Lux_View_Helper_Jquery_TableSorter extends Lux_View_Helper_Jquery_Base
      * to a JSON string.
      *
      */
-    public function tableSorter($selector, $config = null)
+    public function set($selector, $config = null)
     {
         if($config) {
             // Encode configuration.
-            $config = $this->json->encode($config);
+            $config = $this->_view->jquery()->json()->encode($config);
         }
 
         // Add inline script.
-        $script = '    $("' . $selector . '").tablesorter(' . $config . ');';
-        $this->addInlineScript($script);
+        $code = '$("' . $selector . '").tablesorter(' . $config . ');';
+        $this->_view->jquery()->addScriptInline($code);
     }
 }

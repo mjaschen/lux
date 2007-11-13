@@ -18,18 +18,7 @@
  * @version $Id$
  *
  */
-
-/**
- *
- * Allows multiple options to be selected and moved from a <select> element
- * to another <select> element.
- *
- * @category Lux
- *
- * @package Lux_View_Helper
- *
- */
-class Lux_View_Helper_Jquery_MultipleSelects extends Lux_View_Helper_Jquery_Base
+class Lux_View_Helper_Jquery_MultipleSelects extends Solar_View_Helper
 {
     /**
      *
@@ -42,8 +31,19 @@ class Lux_View_Helper_Jquery_MultipleSelects extends Lux_View_Helper_Jquery_Base
     {
         parent::__construct($config);
 
-        // Add scripts and CSS files.
-        $this->needsFile('jquery.multiselects.js');
+        $this->_view->jquery()->addScript('jquery.multiselects.js');
+    }
+
+    /**
+     *
+     * Interface method.
+     *
+     * @return Lux_View_Helper_Jquery_Accordion
+     *
+     */
+    public function multipleSelects()
+    {
+        return $this;
     }
 
     /**
@@ -60,11 +60,11 @@ class Lux_View_Helper_Jquery_MultipleSelects extends Lux_View_Helper_Jquery_Base
      * @return void
      *
      */
-    public function multipleSelects($from, $to, $trigger)
+    public function set($from, $to, $trigger)
     {
         // Add inline script.
-        $script = '    $("' . $from . '")' .
-                  '.multiSelect("' . $to . '", "' . $trigger.'");';
-        $this->addInlineScript($script);
+        $code = '$("' . $from . '")' .
+                '.multiSelect("' . $to . '", "' . $trigger.'");';
+        $this->addInlineScript($code);
     }
 }

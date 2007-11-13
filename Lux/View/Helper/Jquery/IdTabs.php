@@ -14,17 +14,7 @@
  * @version $Id$
  *
  */
-
-/**
- *
- * Helper to build navigation tabs using javascript.
- *
- * @category Lux
- *
- * @package Lux_View_Helper
- *
- */
-class Lux_View_Helper_Jquery_IdTabs extends Lux_View_Helper_Jquery_Base
+class Lux_View_Helper_Jquery_IdTabs extends Solar_View_Helper
 {
     /**
      *
@@ -64,8 +54,7 @@ class Lux_View_Helper_Jquery_IdTabs extends Lux_View_Helper_Jquery_Base
     {
         parent::__construct($config);
 
-        // Add scripts and CSS files.
-        $this->needsFile('idTabs.js');
+        $this->_view->jquery()->addScript('idTabs.js');
     }
 
     /**

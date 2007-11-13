@@ -16,18 +16,53 @@
  * @version $Id$
  *
  */
-
-/**
- *
- * jQuery base helper.
- *
- * @category Lux
- *
- * @package Lux_View_Helper
- *
- */
-class Lux_View_Helper_Jquery extends Lux_View_Helper_Js
+class Lux_View_Helper_Jquery extends Solar_View_Helper
 {
+    /**
+     *
+     * User-provided configuration values. Keys are...
+     *
+     * `scripts`
+     * : (string) Public path to jQuery scripts.
+     *
+     * `styles`
+     * : (string) Public path to jQuery styles. This defines the jQuery theme.
+     *
+     * `images`
+     * : (string) Public path to jQuery images. Images needed by scripts will
+     * be taken from here, and are also related to the theme being used.
+     *
+     * `theme`
+     * : (string) jQuery theme name.
+     *
+     * @var array
+     *
+     */
+    protected $_Lux_View_Helper_Jquery = array(
+        'scripts' => 'Lux/scripts/jquery/',
+        'styles'  => 'Lux/styles/jquery/themes/',
+        'images'  => 'Lux/images/jquery/themes/',
+        'theme'   => 'lux',
+    );
+
+    /**
+     *
+     * Current theme in use.
+     *
+     * @param string Theme name.
+     *
+     */
+    protected $_theme;
+
+    /**
+     *
+     * A JSON object, shared by jQuery helpers.
+     *
+     * @param Solar_Json
+     *
+     */
+    protected $_json;
+
     /**
      *
      * Constructor.
@@ -39,12 +74,10 @@ class Lux_View_Helper_Jquery extends Lux_View_Helper_Js
     {
         parent::__construct($config);
 
-        // jQuery file is always needed. Use the library base to add it.
-        $this->base()->needsFile('jquery.js');
+        // jQuery file is always needed. Add it as a base script.
+        $this->addScriptBase('jquery.js');
 
-        // Subscribe this to the 'FetchInlineScript' event.
-        $callback = array($this, 'eventFetchInlineScript');
-        $this->_view->js()->register('fetchInlineScript', $callback);
+        $this->_theme = $this->_config['theme'];
     }
 
     /**
@@ -61,16 +94,155 @@ class Lux_View_Helper_Jquery extends Lux_View_Helper_Js
 
     /**
      *
+     * Adds a <style> tag as part of the "baseline" (foundation) styles.
+     * Generally used by layouts, not views.
+     *
+     * @param string $href The file HREF for the style source.
+     *
+     * @param array $attribs Attributes for the tag.
+     *
+     * @return Lux_View_Helper_Jquery
+     *
+     */
+    public function addStyleBase($href, $attribs = null)
+    {
+        $href = $this->_config['styles'] . $this->_theme . '/' . $href;
+        $this->_view->head()->addStyleBase($href, $attribs);
+        return $this;
+    }
+
+    /**
+     *
+     * Adds a <style> tag as part of the "additional" (override) styles.
+     * Generally used by views, not layouts.  If the file has already been
+     * added, it does not get added again.
+     *
+     * @param string $href The file HREF for the style source.
+     *
+     * @param array $attribs Attributes for the tag.
+     *
+     * @return Lux_View_Helper_Jquery
+     *
+     */
+    public function addStyle($href, $attribs = null)
+    {
+        $href = $this->_config['styles'] . $this->_theme . '/' . $href;
+        $this->_view->head()->addStyle($href, $attribs);
+        return $this;
+    }
+
+    /**
+     *
+     * Adds a <script> tag as part of the "baseline" (foundation) scripts.
+     * Generally used by layouts, not views.  If the file has already been
+     * added, it does not get added again.
+     *
+     * @param string $src The file HREF for the script source.
+     *
+     * @param array $attribs Attributes for the tag.
+     *
+     * @return Lux_View_Helper_Jquery
+     *
+     */
+    public function addScriptBase($src, $attribs = null)
+    {
+        $src = $this->_config['scripts'] . $src;
+        $this->_view->head()->addScriptBase($src, $attribs);
+        return $this;
+    }
+
+    /**
+     *
+     * Adds a <script> tag as part of the "additional" (override) scripts.
+     * Generally used by views, not layouts.  If the file has already been
+     * added, it does not get added again.
+     *
+     * @param string $src The file HREF for the script source.
+     *
+     * @param array $attribs Attributes for the tag.
+     *
+     * @return Lux_View_Helper_Jquery
+     *
+     */
+    public function addScript($src, $attribs = null)
+    {
+        $src = $this->_config['scripts'] . $src;
+        $this->_view->head()->addScript($src, $attribs);
+        return $this;
+    }
+
+    /**
+     *
+     * Adds a <script> tag with inline code.
+     *
+     * @param string $code The inline code for the tag.
+     *
+     * @return Lux_View_Helper_Jquery
+     *
+     */
+    public function addScriptInline($code)
+    {
+        $code = "$(function() {\n$code\n});";
+        $this->_view->head()->addScriptInline($code);
+        return $this;
+    }
+
+    /**
+     *
+     * Returns a public href for an image used by a Jquery helper.
+     *
+     * @param string $file Name of image file needed by the helper class.
+     *
+     * @return string Public image path.
+     *
+     */
+    public function getImage($src)
+    {
+        $src = $this->_config['images'] . $this->_theme . '/' . $src;
+        return $this->_view->publicHref($src);
+    }
+
+    /**
+     *
+     * Returns the name of the jQuery theme in use.
+     *
+     * Useful to set a class for HTML elements using the configured theme name.
+     *
+     * @return string Theme name.
+     *
+     */
+    public function getTheme()
+    {
+        return $this->_theme;
+    }
+
+    /**
+     *
+     * Sets the theme used to get jQuery related styles and images.
+     *
+     * @params string Theme name.
+     *
+     * @return Lux_View_Helper_Jquery
+     *
+     */
+    public function setTheme($theme)
+    {
+        $this->_theme = $theme;
+        return $this;
+    }
+
+    /**
+     *
      * Returns a jQuery helper object; creates it as needed.
      *
-     * @param string $helper Name of jQuery helper class
+     * @param string $helper Name of jQuery helper class.
      *
-     * @return object A new standalone helper object.
+     * @return object A jQuery helper object.
      *
      */
     protected function __call($method, $params)
     {
-        // Because Solar_View_Helpers typically are *not* in sub-dirs
+        // Add a prefix for the helper class.
         $class = 'Jquery_' . ucfirst($method);
         $helper = $this->_view->getHelper($class);
         return call_user_func_array(array($helper, $method), $params);
@@ -78,23 +250,17 @@ class Lux_View_Helper_Jquery extends Lux_View_Helper_Js
 
     /**
      *
-     * Inline script event.
+     * Returns a JSON object.
+     *
+     * @return Solar_Json
      *
      */
-    public function eventFetchInlineScript($helper, &$params)
+    public function json()
     {
-        // Gather all registered scripts for output.
-        if (!empty($this->scripts)) {
-            // Add a jQuery wrapper.
-            array_unshift($this->scripts, '$(document).ready(function() {');
-            $this->scripts[] = '});';
-
-            // Prepare the scripts.
-            $scripts = implode("\n", $this->scripts);
-            $scripts = trim($scripts);
-
-            // Add the scripts to the result.
-            $params['scripts'] .= $this->_view->inlineScript($scripts);
+        if(!$this->_json) {
+            $this->_json = Solar::factory('Solar_Json');
         }
+
+        return $this->_json;
     }
 }

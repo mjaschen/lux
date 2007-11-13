@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Attachs a calendar widget to a form field.
+ * jQuery calendar helper.
  *
  * @category Lux
  *
@@ -14,17 +14,7 @@
  * @version $Id$
  *
  */
-
-/**
- *
- * Attachs a calendar widget to a form field.
- *
- * @category Lux
- *
- * @package Lux_View_Helper
- *
- */
-class Lux_View_Helper_Jquery_Calendar extends Lux_View_Helper_Jquery_Base
+class Lux_View_Helper_Jquery_Calendar extends Solar_View_Helper
 {
     /**
      *
@@ -37,9 +27,23 @@ class Lux_View_Helper_Jquery_Calendar extends Lux_View_Helper_Jquery_Base
     {
         parent::__construct($config);
 
-        // Add scripts and CSS files.
-        $this->needsFile('ui.calendar.js');
-        $this->needsStyle($this->_config['theme'] . '.calendar.css');
+        $this->_view->jquery()
+            // Scripts
+            ->addScript('ui.calendar.js')
+            // Styles
+            ->addStyle('calendar.css');
+    }
+
+    /**
+     *
+     * Interface method.
+     *
+     * @return Lux_View_Helper_Jquery_Calendar
+     *
+     */
+    public function calendar()
+    {
+        return $this;
     }
 
     /**
@@ -53,7 +57,7 @@ class Lux_View_Helper_Jquery_Calendar extends Lux_View_Helper_Jquery_Base
      * @return void
      *
      */
-    public function calendar($selector, $config = null)
+    public function set($selector, $config = null)
     {
         if(!$config) {
             // Set a default configuration.
@@ -66,10 +70,10 @@ class Lux_View_Helper_Jquery_Calendar extends Lux_View_Helper_Jquery_Base
         }
 
         // Encode configuration.
-        $config = $this->json->encode($config);
+        $config = $this->_view->jquery()->json()->encode($config);
 
         // Add inline script.
-        $script = '    $("' . $selector . '").calendar(' . $config . ');';
-        $this->addInlineScript($script);
+        $code = '$("' . $selector . '").calendar(' . $config . ');';
+        $this->_view->jquery()->addScriptInline($code);
     }
 }

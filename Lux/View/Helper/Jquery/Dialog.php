@@ -14,17 +14,7 @@
  * @version $Id$
  *
  */
-
-/**
- *
- * Dialog widget.
- *
- * @category Lux
- *
- * @package Lux_View_Helper
- *
- */
-class Lux_View_Helper_Jquery_Dialog extends Lux_View_Helper_Jquery_Base
+class Lux_View_Helper_Jquery_Dialog extends Solar_View_Helper
 {
     /**
      *
@@ -37,14 +27,15 @@ class Lux_View_Helper_Jquery_Dialog extends Lux_View_Helper_Jquery_Base
     {
         parent::__construct($config);
 
-        // Add scripts and CSS files.
-        $this->needsFile('jquery.dimensions.js');
-        $this->needsFile('ui.dialog.js');
-        $this->needsFile('ui.resizable.js');
-        $this->needsFile('ui.mouse.js');
-        $this->needsFile('ui.draggable.js');
-
-        $this->needsStyle($this->_config['theme'] .'.dialog.css');
+        $this->_view->jquery()
+            // Scripts
+            ->addScript('jquery.dimensions.js')
+            ->addScript('ui.dialog.js')
+            ->addScript('ui.resizable.js')
+            ->addScript('ui.mouse.js')
+            ->addScript('ui.draggable.js')
+            // Styles
+            ->addStyle('dialog.css');
     }
 
     /**
@@ -70,17 +61,17 @@ class Lux_View_Helper_Jquery_Dialog extends Lux_View_Helper_Jquery_Base
      * @return void
      *
      */
-    public function init($selector, $config = null)
+    public function set($selector, $config = null)
     {
         if($config) {
             // Encode configuration.
-            $config = $this->json->encode($config);
+            $config = $this->_view->jquery()->json()->encode($config);
         } else {
             $config = '';
         }
 
         // Add inline script.
-        $script = '    $("' . $selector . '").dialog(' . $config . ');';
-        $this->addInlineScript($script);
+        $code = '$("' . $selector . '").dialog(' . $config . ');';
+        $this->_view->jquery()->addScriptInline($code);
     }
 }
