@@ -106,7 +106,7 @@ class Lux_Event_Handler extends Solar_Base
      * it in $this->_observers.
      *
      */
-    public function register($event, $callback, $static = false)
+    public function set($event, $callback, $static = false)
     {
         // Create a unique identifier.
         $id = $this->_getCallbackId($callback, $static);
@@ -138,7 +138,7 @@ class Lux_Event_Handler extends Solar_Base
      * @var bool $static True to check for a static method callback.
      *
      */
-    public function isRegistered($event, $callback, $static = false)
+    public function exists($event, $callback, $static = false)
     {
         if(!array_key_exists($event, $this->_events)) {
             return false;
