@@ -39,7 +39,8 @@ class Solar_Session_Adapter_Sql extends Solar_Session_Adapter {
      * Keys are:
      * 
      * `sql`
-     * : (array) Configuration keys for the sql object
+     * : (array) Configuration keys for the sql object. Default is `sql`;
+     * in which case uses that as a registry key.
      * 
      * `table`
      * : (string) Table where the session data will be stored
@@ -59,7 +60,7 @@ class Solar_Session_Adapter_Sql extends Solar_Session_Adapter {
      * 
      */
     protected $_Solar_Session_Adapter_Sql = array(
-        'sql'         => null,
+        'sql'         => 'sql',
         'table'       => 'sessions',
         'created_col' => 'created',
         'sessid_col'  => 'sessid',
@@ -75,15 +76,27 @@ class Solar_Session_Adapter_Sql extends Solar_Session_Adapter {
      */
     public function open()
     {
-        // register sql in the registry if not already
-        if (! Solar_Registry::exists('sql')) {
-            Solar_Registry::set(
-                'sql',
-                Solar::factory('Solar_Sql', $this->_config['sql'])
-            );
+        if (is_object($this->_config['sql'])) {
+            // it's an object, use that
+            $this->_sql = $this->_config['sql'];
+            
+        } else if (is_string($this->_config['sql'])) {
+            
+            // register sql in the registry if not already
+            if (! Solar_Registry::exists($this->_config['sql'])) {
+                Solar_Registry::set(
+                    $this->_config['sql'],
+                    Solar::factory('Solar_Sql')
+                );
+            }
+            // get from registry
+            $this->_sql = Solar_Registry::get($this->_config['sql']);
+            
+        } else {
+            // final option, create a new sql object from configuration
+            $this->_sql = Solar::factory('Solar_Sql', $this->_config['sql']);
         }
         
-        $this->_sql = Solar_Registry::get('sql');
         return true;
     }
     
