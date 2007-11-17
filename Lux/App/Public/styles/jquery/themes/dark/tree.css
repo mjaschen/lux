@@ -19,7 +19,7 @@ body.dark { font:11pt Calibri; background:#111; color:snow; }
 .dark .ui-tree-node-text {
     text-decoration:none;
     color:snow;
-    padding:0 .3em; 
+    padding:0 .3em;
 }
 
 .dark .ui-tree-node-selected > .ui-tree-node-text {
