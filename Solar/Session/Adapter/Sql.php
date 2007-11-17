@@ -203,7 +203,7 @@ class Solar_Session_Adapter_Sql extends Solar_Session_Adapter {
      * 
      * @param int $lifetime Session data older than this
      * will be removed. This value can be set using the
-     * `session.gc_lifetime` ini` setting.
+     * `session.gc_maxlifetime` ini-setting.
      
      * @return bool
      * 
