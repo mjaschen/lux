@@ -191,10 +191,10 @@ $.fn.ajaxSubmit = function(options) {
     if (veto.veto) return this;
 
     var a = this.formToArray(options.semantic);
-	if (options.data) {
-	    for (var n in options.data)
-	        a.push( { name: n, value: options.data[n] } );
-	}
+    if (options.data) {
+        for (var n in options.data)
+            a.push( { name: n, value: options.data[n] } );
+    }
 
     // give pre-submit callback an opportunity to abort the submit
     if (options.beforeSubmit && options.beforeSubmit(a, this, options) === false) return this;
@@ -817,4 +817,3 @@ $.fn.resetForm = function() {
 };
 
 })(jQuery);
- 
