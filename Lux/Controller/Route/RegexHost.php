@@ -143,8 +143,10 @@ class Lux_Controller_Route_RegexHost extends Lux_Controller_Route_Regex
                 throw $this->_exception('ERR_HOST_REVERSE_ROUTE_NOT_SPECIFIED');
             }
 
-            $host_map = (array) $this->_config['host_map'];
-            $host_data = $this->_getMappedValues($data, $host_map, true, false);
+            $host_data = array();
+            foreach($this->_config['host_map'] as $key => $index) {
+                $host_data[] = isset($data[$index]) ? $data[$index] : null;
+            }
 
             // Replace the values in the reverse route.
             $res = @vsprintf($this->_config['host_reverse'], $host_data);
