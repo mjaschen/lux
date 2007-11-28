@@ -111,12 +111,11 @@ class Lux_Controller_Route_RegexHost extends Lux_Controller_Route_Regex
 
         // 3. Add values from the hostname match to the results.
         if ($this->_config['host_regex'] && $this->_config['host_map']) {
-            // Override or set values using matches from the hostname.
-            foreach((array) $this->_config['host_map'] as $index => $key) {
-                if (array_key_exists($index, $host_values)) {
-                    $values[$key] = $host_values[$index];
-                } else {
-                    $values[$key] = null;
+            settype($this->_config['host_map'], 'array');
+            foreach ((array) $host_values as $key => $value) {
+                if (array_key_exists($key, $this->_config['host_map'])) {
+                    $index = $this->_config['host_map'][$key];
+                    $values[$index] = $host_values[$key];
                 }
             }
         }
