@@ -161,9 +161,9 @@ class Lux_Controller_Route_Regex extends Solar_Base
         $defaults = $this->_getMappedValues($this->_defaults, $this->_map,
             false, true);
 
-        $return = $values + $defaults;
+        $res = $values + $defaults;
 
-        return $return;
+        return $res;
     }
 
     /**
@@ -196,7 +196,7 @@ class Lux_Controller_Route_Regex extends Solar_Base
             return $values;
         }
 
-        $return = array();
+        $res = array();
 
         foreach ($values as $key => $value) {
             if (is_int($key) && !$reversed) {
@@ -209,7 +209,7 @@ class Lux_Controller_Route_Regex extends Solar_Base
                         $index = $key;
                     }
                 }
-                $return[$index] = $values[$key];
+                $res[$index] = $values[$key];
             } elseif ($reversed) {
                 if(!is_int($key)) {
                     $index = array_search($key, $map, true);
@@ -218,14 +218,14 @@ class Lux_Controller_Route_Regex extends Solar_Base
                 }
 
                 if ($index !== false) {
-                    $return[$index] = $values[$key];
+                    $res[$index] = $values[$key];
                 }
             } elseif ($preserve) {
-                $return[$key] = $value;
+                $res[$key] = $value;
             }
         }
 
-        return $return;
+        return $res;
     }
 
     /**
@@ -251,13 +251,15 @@ class Lux_Controller_Route_Regex extends Solar_Base
 
         ksort($data);
 
-        $return = @vsprintf($this->_reverse, $data);
+        $res = @vsprintf($this->_reverse, $data);
 
-        if ($return === false) {
+        if ($res === false) {
             throw $this->_exception('ERR_ASSEMBLE_FAILED');
         }
 
-        return $return;
+        $res = trim($res, '/');
+
+        return $res;
     }
 
     /**
