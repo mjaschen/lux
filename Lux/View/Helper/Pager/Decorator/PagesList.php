@@ -115,20 +115,16 @@ class Lux_View_Helper_Pager_Decorator_PagesList extends Solar_View_Helper
         }
 
         // Build the list.
-        $list = array();
+        $list = '';
         foreach ((array) $items as $key => $info) {
             $class = $info['type'] . '_class';
             if (isset($$class)) {
                 // Valid item type.
-                $list[] = "    <li{$$class}>\n"
-                    . "        {$info['content']}\n"
-                    . "    </li>\n";
+                $list .= "<li{$$class}>{$info['content']}</li>";
             }
         }
 
         // Done!
-        return "<$list_type$list_class>\n"
-             . implode("\n", $list) . "\n"
-             . "</$list_type>\n";
+        return "<$list_type$list_class>$list</$list_type>";
     }
 }

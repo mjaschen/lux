@@ -170,6 +170,6 @@ class Lux_View_Helper_ListNav extends Lux_View_Helper_ListBase
         $text = $this->_processItemContent($spec);
 
         // Done!
-        return "    <li$attribs>$text</li>";
+        return "<li$attribs>$text</li>";
     }
 }

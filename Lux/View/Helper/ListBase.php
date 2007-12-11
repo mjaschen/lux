@@ -66,8 +66,9 @@ class Lux_View_Helper_ListBase extends Solar_View_Helper
         // Process list items.
         $i = 1;
         $total = count($items);
+        $list = '';
         foreach($items as $key => $value) {
-            $items[$key] = $this->_processItem($key, $value, $i, $total);
+            $list .= $this->_processItem($key, $value, $i, $total);
             $i++;
         }
 
@@ -76,9 +77,7 @@ class Lux_View_Helper_ListBase extends Solar_View_Helper
         $attribs = $this->_view->attribs($attribs);
 
         // Done!
-        return "<$type$attribs>\n"
-             . implode("\n", $items) . "\n"
-             . "</$type>\n";
+        return "<$type$attribs>$list</$type>";
     }
 
     /**
@@ -111,7 +110,7 @@ class Lux_View_Helper_ListBase extends Solar_View_Helper
         }
 
         // Done!
-        return "    <li$attribs>$content</li>";
+        return "<li$attribs>$content</li>";
     }
 
     /**
