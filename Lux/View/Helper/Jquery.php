@@ -47,6 +47,15 @@ class Lux_View_Helper_Jquery extends Solar_View_Helper
 
     /**
      *
+     * Head helper, to set scripts and styles.
+     *
+     * @param Solar_View_Helper_Head.
+     *
+     */
+    protected $_head;
+
+    /**
+     *
      * Current theme in use.
      *
      * @param string Theme name.
@@ -74,10 +83,24 @@ class Lux_View_Helper_Jquery extends Solar_View_Helper
     {
         parent::__construct($config);
 
-        // jQuery file is always needed. Add it as a base script.
-        $this->addScriptBase('jquery.js');
+        $this->_setup();
+    }
 
+    /**
+     *
+     * Sets the head helper, the current theme, and loads basic scripts.
+     *
+     */
+    protected function _setup()
+    {
+        // Set the head helper.
+        $this->_head = $this->_view->head();
+
+        // Set the current theme.
         $this->_theme = $this->_config['theme'];
+
+        // Add jQuery file, which is always used.
+        $this->addScriptBase('jquery.js');
     }
 
     /**
@@ -107,7 +130,7 @@ class Lux_View_Helper_Jquery extends Solar_View_Helper
     public function addStyleBase($href, $attribs = null)
     {
         $href = $this->_config['styles'] . $this->_theme . '/' . $href;
-        $this->_view->head()->addStyleBase($href, $attribs);
+        $this->_head->addStyleBase($href, $attribs);
         return $this;
     }
 
@@ -127,7 +150,7 @@ class Lux_View_Helper_Jquery extends Solar_View_Helper
     public function addStyle($href, $attribs = null)
     {
         $href = $this->_config['styles'] . $this->_theme . '/' . $href;
-        $this->_view->head()->addStyle($href, $attribs);
+        $this->_head->addStyle($href, $attribs);
         return $this;
     }
 
@@ -147,7 +170,7 @@ class Lux_View_Helper_Jquery extends Solar_View_Helper
     public function addScriptBase($src, $attribs = null)
     {
         $src = $this->_config['scripts'] . $src;
-        $this->_view->head()->addScriptBase($src, $attribs);
+        $this->_head->addScriptBase($src, $attribs);
         return $this;
     }
 
@@ -167,7 +190,7 @@ class Lux_View_Helper_Jquery extends Solar_View_Helper
     public function addScript($src, $attribs = null)
     {
         $src = $this->_config['scripts'] . $src;
-        $this->_view->head()->addScript($src, $attribs);
+        $this->_head->addScript($src, $attribs);
         return $this;
     }
 
@@ -183,7 +206,7 @@ class Lux_View_Helper_Jquery extends Solar_View_Helper
     public function addScriptInline($code)
     {
         $code = "$(function() {\n$code\n});";
-        $this->_view->head()->addScriptInline($code);
+        $this->_head->addScriptInline($code);
         return $this;
     }
 
