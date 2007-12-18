@@ -58,7 +58,7 @@ class Lux_View_Helper_ListBase extends Solar_View_Helper
      * @return string The built list.
      *
      */
-    public function _processList($items, $type, $attribs)
+    public function _processList($items, $type = null, $attribs = null)
     {
         // Set the item list.
         $items = (array) $items;
@@ -72,12 +72,15 @@ class Lux_View_Helper_ListBase extends Solar_View_Helper
             $i++;
         }
 
-        // Set attribs.
-        settype($attribs, 'array');
-        $attribs = $this->_view->attribs($attribs);
-
         // Done!
-        return "<$type$attribs>$list</$type>";
+        if ($type) {
+            // Set attribs.
+            settype($attribs, 'array');
+            $attribs = $this->_view->attribs($attribs);
+            return "<$type$attribs>$list</$type>";
+        } else {
+            return $list;
+        }
     }
 
     /**
@@ -137,6 +140,8 @@ class Lux_View_Helper_ListBase extends Solar_View_Helper
         if(is_string($spec)) {
             // Raw content: just return it.
             return $spec;
+        } elseif(array_key_exists('raw', $spec)) {
+            return $spec['raw'];
         }
 
         // Not a string? We need an array.

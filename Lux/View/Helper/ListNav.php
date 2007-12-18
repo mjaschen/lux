@@ -132,15 +132,18 @@ class Lux_View_Helper_ListNav extends Lux_View_Helper_ListBase
         $total = null)
     {
         // Start the class list.
-        $class = array();
+        $attribs = isset($spec['attribs']) ? (array) $spec['attribs'] : array();
+        if (isset($attribs['class'])) {
+            settype($attribs['class'], 'array');
+        }
 
         // Add first / last class?
         if($iteration == 1 && $this->_display['first_class']) {
             // First item class.
-            $class[] = $this->_display['first_class'];
+            $attribs['class'][] = $this->_display['first_class'];
         } elseif($iteration == $total && $this->_display['last_class']) {
             // Last item class.
-            $class[] = $this->_display['last_class'];
+            $attribs['class'][] = $this->_display['last_class'];
         }
 
         // Is this the active item?
@@ -149,18 +152,14 @@ class Lux_View_Helper_ListNav extends Lux_View_Helper_ListBase
         // Add selected / item class?
         if($selected && $this->_display['active_class']) {
             // Selected class.
-            $class[] = $this->_display['active_class'];
+            $attribs['class'][] = $this->_display['active_class'];
         } elseif(!$selected && $this->_display['item_class']) {
             // Item class.
-            $class[] = $this->_display['item_class'];
+            $attribs['class'][] = $this->_display['item_class'];
         }
 
         // Add attribs?
-        if(!empty($class)) {
-            $attribs = $this->_view->attribs(array('class' => $class));
-        } else {
-            $attribs = null;
-        }
+        $attribs = $this->_view->attribs($attribs);
 
         // Should the selected item have a link?
         if($selected && !$this->_display['active_link']) {
