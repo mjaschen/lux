@@ -50,7 +50,7 @@ class Lux_File extends Solar_Base {
     public function csvReadLineAssoc($file, $callback, $length = 1000, $delim = ',',
         $enclose = null) {
             
-        if (! ($file = Solar::fileExists($file))) {
+        if (! ($file = Solar_File::exists($file))) {
             throw $this->_exception('ERR_FILE_EXISTS');
         }
         
