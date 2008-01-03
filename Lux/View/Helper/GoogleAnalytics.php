@@ -67,11 +67,14 @@ class Lux_View_Helper_GoogleAnalytics extends Solar_View_Helper {
         
         $xhtml = array();
         
-        $xhtml[] = '<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">';
+        $xhtml[] = '<script type="text/javascript">';
+        $xhtml[] = 'var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");';
+        $xhtml[] = "document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));";
         $xhtml[] = '</script>';
         $xhtml[] = '<script type="text/javascript">';
-        $xhtml[] = "_uacct = \"$track\";";
-        $xhtml[] = 'urchinTracker();';
+        $xhtml[] = "var pageTracker = _gat._getTracker(\"$track\");";
+        $xhtml[] = 'pageTracker._initData();';
+        $xhtml[] = 'pageTracker._trackPageview();';
         $xhtml[] = '</script>';
         
         return implode("\n", $xhtml);
