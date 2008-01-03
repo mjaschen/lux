@@ -43,6 +43,7 @@ class Lux_View_Helper_GoogleAnalytics extends Solar_View_Helper {
     protected $_Lux_View_Helper_GoogleAnalytics = array(
         'id'     => null,
         'enable' => true,
+        'ssl'    => false,
     );
     
     /**
@@ -65,12 +66,17 @@ class Lux_View_Helper_GoogleAnalytics extends Solar_View_Helper {
             $track = $id;
         }
         
+        // use ssl for fetching the JS file?
+        $protocol = 'http://www.';
+        if ($this->_config['ssl']) {
+            $protocol = 'https://ssl.';
+        }
+        
+        $js = $protocol . 'google-analytics.com/ga.js';
+        $this->_view->head()->addScriptBase($js);
+        
         $xhtml = array();
         
-        $xhtml[] = '<script type="text/javascript">';
-        $xhtml[] = 'var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");';
-        $xhtml[] = "document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));";
-        $xhtml[] = '</script>';
         $xhtml[] = '<script type="text/javascript">';
         $xhtml[] = "var pageTracker = _gat._getTracker(\"$track\");";
         $xhtml[] = 'pageTracker._initData();';
