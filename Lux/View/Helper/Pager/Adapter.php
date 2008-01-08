@@ -148,8 +148,8 @@ abstract class Lux_View_Helper_Pager_Adapter extends Solar_View_Helper
      */
     public function fetch($href, $spec)
     {
-        // Set href.
-        $this->_href = rtrim($href, '/');
+        // Set href: decode so that it won't break sprintf() in _getAction().
+        $this->_href = urldecode(rtrim($href, '/'));
 
         $spec = (array) $spec;
 
@@ -348,10 +348,10 @@ abstract class Lux_View_Helper_Pager_Adapter extends Solar_View_Helper
             // Get the locale key from the config.
             $text = $this->_config['locale'][$text];
         }
-        
+
         // replace placeholder with page number
         $href = sprintf($this->_href, (int) $page);
-        
+
         // build and return <a>...</a>
         return $this->_view->action($href, $text);
     }
