@@ -230,14 +230,7 @@ class Lux_Sitemap extends Solar_Base
         // Create a new XML.
         $this->_doc = new DOMDocument('1.0', 'UTF-8');
 
-        // If extension is '.gz', turn on compression.
         if (substr($file, -3) == '.gz') {
-            $gzip = true;
-        } else {
-            $gzip = false;
-        }
-
-        if ($gzip) {
             // Load XML from compressed file.
             // Get the file size.
             $handle = fopen($file, 'rb');
