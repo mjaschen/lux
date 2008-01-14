@@ -209,6 +209,12 @@ class Lux_Controller_Router extends Solar_Controller_Front
 
         if($this->_config['compat']) {
             // Compatibility: take the page name off the top of the path.
+            if(isset($params['module'])) {
+                // 1. Remove the module name.
+                array_shift($uri->path);
+            }
+
+            // 2. Remove the controller name.
             array_shift($uri->path);
         }
 
