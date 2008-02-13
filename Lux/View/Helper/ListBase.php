@@ -60,6 +60,10 @@ class Lux_View_Helper_ListBase extends Solar_View_Helper
      */
     public function _processList($items, $type = null, $attribs = null)
     {
+        if (empty($items)) {
+            return;
+        }
+
         // Set the item list.
         $items = (array) $items;
 
