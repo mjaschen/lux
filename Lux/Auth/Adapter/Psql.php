@@ -16,7 +16,7 @@
  * 
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
- * @version $Id: Cookie.php 111 2008-03-02 12:55:16Z rodrigo.moraes $
+ * @version $Id$
  * 
  */
 class Lux_Auth_Adapter_Psql extends Solar_Auth_Adapter_Sql
@@ -182,17 +182,21 @@ class Lux_Auth_Adapter_Psql extends Solar_Auth_Adapter_Sql
                     . hash($this->_config['hash_algo'], $data[$this->_config['handle_col']])
                 );
                 
-                $token_check       = $data[$this->_config['token_col']] == $token;
-                $identifier_check  = $data[$this->_config['identifier_col']] == $identifier_real;
-                $timeout_check     = $data[$this->_config['timeout_col']] < date('Y-m-d H:i:s');
+                $token_check      = $data[$this->_config['token_col']] == $token;
+                $identifier_check = $data[$this->_config['identifier_col']] == $identifier_real;
                 
                 // if any of these fail we'll just return false
-                if (! $token_check || ! $identifier_check || ! $timeout_check) {
+                if (! $token_check || ! $identifier_check) {
                     return false;
                 }
                 
-                // ------------------------------------------
-                // @todo Renew cookie!
+                // Renew cookie if necessary.
+                $timeout_check = $data[$this->_config['timeout_col']] < date('Y-m-d H:i:s');
+                
+                if (! $timeout_check) {
+                    $handle = $data[$this->_config['handle_col']];
+                    $this->_setToken($handle);
+                }
                 
                 // successful login, treat result as user info
                 $this->reset('VALID', $data);
@@ -228,49 +232,59 @@ class Lux_Auth_Adapter_Psql extends Solar_Auth_Adapter_Sql
             );
             
             if ($persist) {
-                
                 $handle = $info[$this->_config['handle_col']];
-                
-                // generate identifier
-                $identifier = hash(
-                    $this->_config['hash_algo'],
-                    $this->_config['salt']
-                    . hash($this->_config['hash_algo'], $handle)
-                );
-                
-                // generate secret token
-                $token = md5(uniqid(rand(), true));
-                
-                // set timeout timestamp (in seconds)
-                $timeout = time() + $this->_config['timeout'];
-                
-                // update table info
-                // get the dependency object of class Solar_Sql
-                $sql = Solar::dependency('Solar_Sql', $this->_config['sql']);
-                
-                $data = array(
-                    $this->_config['identifier_col'] => $identifier,
-                    $this->_config['token_col']      => $token,
-                    $this->_config['timeout_col']    => $timeout,
-                );
-                $where = array("{$this->_config['handle_col']} = ?" => $handle);
-                $sql->update($this->_config['table'], $data, $where);
-                
-                // set cookie
-                setcookie(
-                    $this->_config['cookie_name'],
-                    "$identifier:$token",
-                    $timeout,
-                    $this->_config['cookie_path'],
-                    $this->_config['cookie_domain'],
-                    $this->_config['cookie_secure'],
-                    $this->_config['cookie_httponly']
-                );
+                $this->_setToken($handle);
             }
         }
         
         return $info;
     }
+
+    /**
+     *
+     * Creates and saves a new token in the database and sets/renews a cookie.
+     *
+     * @param string $handle User handle.
+     *
+     */
+    protected function _setToken($handle)
+    {
+        // generate identifier
+        $identifier = hash(
+            $this->_config['hash_algo'],
+            $this->_config['salt']
+            . hash($this->_config['hash_algo'], $handle)
+        );
+
+        // generate secret token
+        $token = md5(uniqid(rand(), true));
+
+        // set timeout timestamp (in seconds)
+        $timeout = time() + $this->_config['timeout'];
+
+        // update table info
+        // get the dependency object of class Solar_Sql
+        $sql = Solar::dependency('Solar_Sql', $this->_config['sql']);
+
+        $data = array(
+            $this->_config['identifier_col'] => $identifier,
+            $this->_config['token_col']      => $token,
+            $this->_config['timeout_col']    => $timeout,
+        );
+        $where = array("{$this->_config['handle_col']} = ?" => $handle);
+        $sql->update($this->_config['table'], $data, $where);
+
+        // set cookie
+        setcookie(
+            $this->_config['cookie_name'],
+            "$identifier:$token",
+            $timeout,
+            $this->_config['cookie_path'],
+            $this->_config['cookie_domain'],
+            $this->_config['cookie_secure'],
+            $this->_config['cookie_httponly']
+        );
+    }    
     
     /**
      *
