@@ -76,6 +76,7 @@ class Lux_Auth_Adapter_Psql extends Solar_Auth_Adapter_Sql
         'timeout'         => 604800,
         'hash_algo'       => 'md5',
         'cookie_name'     => 'auth',
+        'cookie_expire'   => 2592000,
         'cookie_path'     => '/',
         'cookie_domain'   => '',
         'cookie_secure'   => false,
