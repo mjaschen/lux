@@ -295,16 +295,11 @@ class Lux_Auth_Adapter_Psql extends Solar_Auth_Adapter_Sql
      */
     protected function _processLogout()
     {
-        $status = parent::_processLogout();
-        
-        // Some time in the past (one month ago).
-        $lifetime = time() - 2592000;
-        
-        // set cookie
+        // set cookie to some time in the past (one month ago)
         setcookie(
             $this->_config['cookie_name'],
             'DELETED',
-            $lifetime,
+            time() - 2592000,
             $this->_config['cookie_path'],
             $this->_config['cookie_domain'],
             $this->_config['cookie_secure'],
@@ -312,6 +307,6 @@ class Lux_Auth_Adapter_Psql extends Solar_Auth_Adapter_Sql
         );
         
         // return status from parent
-        return $status;
+        return parent::_processLogout();
     }
 }
