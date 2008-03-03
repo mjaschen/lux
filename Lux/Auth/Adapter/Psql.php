@@ -48,6 +48,10 @@ class Lux_Auth_Adapter_Psql extends Solar_Auth_Adapter_Sql
      * `cookie_name`
      * : (string) Name of the cookie.
      * 
+     * `cookie_expire`
+     * : (int) Expiration time for the cookie, in seconds. Default is 2592000
+     *   (one week).
+     * 
      * `cookie_path`
      * : (string) Path option for setcookie().
      * 
@@ -259,7 +263,7 @@ class Lux_Auth_Adapter_Psql extends Solar_Auth_Adapter_Sql
         // generate secret token
         $token = md5(uniqid(rand(), true));
 
-        // set timeout timestamp (in seconds)
+        // set timeout timestamp for the token (in seconds)
         $timeout = time() + $this->_config['timeout'];
 
         // update table info
@@ -278,7 +282,7 @@ class Lux_Auth_Adapter_Psql extends Solar_Auth_Adapter_Sql
         setcookie(
             $this->_config['cookie_name'],
             "$identifier:$token",
-            $timeout,
+            time() + $this->_config['cookie_expire'],
             $this->_config['cookie_path'],
             $this->_config['cookie_domain'],
             $this->_config['cookie_secure'],
