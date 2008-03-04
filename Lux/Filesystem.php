@@ -1,13 +1,11 @@
 <?php
 /**
  *
- * Handy filesystem manipulation utilities.
+ * Filesystem manipulation utilities.
  *
  * @category Lux
  *
  * @package Lux_Filesystem
- *
- * @author Clay Loveless <clay@killersoft.com>
  *
  * @author Rodrigo Moraes <rodrigo.moraes@gmail.com>
  *
@@ -16,33 +14,18 @@
  * @version $Id$
  *
  */
-
-/**
- *
- * Handy filesystem manipulation utilities.
- *
- * @category Lux
- *
- * @package Lux_Filesystem
- *
- */
-class Lux_Filesystem extends Solar_Base {
-
+class Lux_Filesystem extends Solar_Base
+{
     /**
      *
-     * User-provided configuration.
-     *
-     * Keys are ...
-     *
-     * `suppress_warnings`
-     * : (bool) Whether or not to suppress warnings during filesystem
-     * operations.
+     * User-provided configuration values.
      *
      * @var array
      *
      */
     protected $_Lux_Filesystem = array(
-        'suppress_warnings' => true,
+        'chmod_dir'  => 0755,
+        'chmod_file' => 0644,
     );
 
     /**
@@ -53,38 +36,40 @@ class Lux_Filesystem extends Solar_Base {
      *
      * @param string $to To directory path.
      *
-     * @param RecursiveDirectoryIterator $iter.
+     * @param string $ignore Regular expression to ignore files or directories.
      *
      */
-    public function copyR($from, $to, $iter = null)
+    public function copyDir($from, $to, $ignore = null)
     {
+        if ($ignore && preg_match($ignore, $from)) {
+            // Ignore the file or dir.
+            return;
+        }
+
         if (is_file($from)) {
-            return $this->copyFile($from, $to);
-        } elseif (!is_dir($to)) {
+            // Single file copy.
+            $this->copyFile($from, $to);
+            return;
+        }
+
+        if (! file_exists($to)) {
+            // Create destination dir.
             $this->createDir($to);
         }
 
-        if(is_null($iter)) {
-            $iter = new RecursiveDirectoryIterator($from);
-        }
+        $iter = new DirectoryIterator($from);
 
-        for ($iter->rewind(); $iter->valid(); $iter->next()) {
-            $file = basename($iter->current()->getPathname());
-
-            if ($iter->isDot()) {
-                // Skip dot-files.
+        foreach($iter as $info) {
+            // Ignore dots and links.
+            if ($info->isDot() || (!$info->isFile() && !$info->isDir())) {
                 continue;
-            } else {
-                $new_from = $from . DIRECTORY_SEPARATOR . $file;
-                $new_to = $to . DIRECTORY_SEPARATOR . $file;
-                $new_iter = ($iter->isDir() && $iter->hasChildren())
-                    ? $iter->getChildren()
-                    : null;
-
-                if ($to !== $new_from) {
-                    $this->copyR($new_from, $new_to, $new_iter);
-                }
             }
+
+            // Increment the destination with the file/dir name.
+            $new_to = $to . DIRECTORY_SEPARATOR . basename($info->getPathname());
+
+            // Copy recursivelly.
+            $this->copyDir($info->getPathname(), $new_to, $ignore);
         }
     }
 
@@ -99,18 +84,28 @@ class Lux_Filesystem extends Solar_Base {
      * @return bool True on success.
      *
      */
-    public function createDir($path, $chmod = null) {
+    public function createDir($path, $chmod = null)
+    {
+        if (! $chmod) {
+            $chmod = $this->_config['chmod_dir'];
+        }
+        
+        $base_path = dirname($path);
+
+        if (! is_writable($base_path)) {
+            throw $this->_exception('ERR_DIRECTORY_NOT_WRITABLE', array(
+                'path' => $base_path,
+            ));
+        }
+
         $res = false;
-        if (!is_dir($path)) {
+        if (! file_exists($path)) {
             $umask = umask(0000);
             if (mkdir($path)) {
                 $res = true;
             }
             umask($umask);
-
-            if($chmod) {
-                chmod($path, $chmod);
-            }
+            chmod($path, $chmod);
         }
         return $res;
     }
@@ -126,14 +121,20 @@ class Lux_Filesystem extends Solar_Base {
      * @return bool True on success.
      *
      */
-    public function copyFile($from, $to) {
+    public function copyFile($from, $to, $chmod = null)
+    {
+        if (! $chmod) {
+            $chmod = $this->_config['chmod_file'];
+        }
+        
         $res = false;
         if (is_file($from)) {
-            $oldumask = umask(0000);
+            $umask = umask(0000);
             if (copy($from, $to)) {
                 $res = true;
             }
-            umask($oldumask);
+            umask($umask);
+            chmod($to, $chmod);
         }
         return $res;
     }
