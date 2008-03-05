@@ -52,12 +52,15 @@ class Lux_Filesystem extends Solar_Base
             return;
         }
 
+        // Fix dir name: always end with a slash.
+        $to = Solar_Dir::fix($to);
+        
         if (! file_exists($to)) {
             // Create destination dir.
             $this->createDir($to);
         }
 
-        $iter = new DirectoryIterator($from);
+        $iter = new DirectoryIterator($from); 
 
         foreach ($iter as $file) {
             // Ignore dots and links.
@@ -66,7 +69,7 @@ class Lux_Filesystem extends Solar_Base
             }
 
             // Increment the destination with the filename.
-            $new_to = $to . DIRECTORY_SEPARATOR . $file->getFilename();
+            $new_to = $to . $file->getFilename();
 
             // Copy recursivelly.
             $this->copyDir($file->getPathname(), $new_to, $ignore);
