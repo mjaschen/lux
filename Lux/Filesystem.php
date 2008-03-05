@@ -32,9 +32,9 @@ class Lux_Filesystem extends Solar_Base
      *
      * Copies a directory recursivelly.
      *
-     * @param string $from From directory path.
+     * @param string $from Source directory path.
      *
-     * @param string $to To directory path.
+     * @param string $to Destination directory path.
      *
      * @param string $ignore Regular expression to ignore files or directories.
      *
@@ -59,17 +59,17 @@ class Lux_Filesystem extends Solar_Base
 
         $iter = new DirectoryIterator($from);
 
-        foreach($iter as $info) {
+        foreach ($iter as $file) {
             // Ignore dots and links.
-            if ($info->isDot() || (!$info->isFile() && !$info->isDir())) {
+            if ($file->isDot() || (! $file->isFile() && ! $file->isDir())) {
                 continue;
             }
 
-            // Increment the destination with the file/dir name.
-            $new_to = $to . DIRECTORY_SEPARATOR . basename($info->getPathname());
+            // Increment the destination with the filename.
+            $new_to = $to . DIRECTORY_SEPARATOR . $file->getFilename();
 
             // Copy recursivelly.
-            $this->copyDir($info->getPathname(), $new_to, $ignore);
+            $this->copyDir($file->getPathname(), $new_to, $ignore);
         }
     }
 
