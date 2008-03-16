@@ -223,6 +223,7 @@ table.debug th {
 
         <!-- Headers -->
         <div class="debug" id="headers">
+            <h2><?php echo $this->getText('LABEL_HEADER_REQ') ?></h2>
             <table class="debug">
                 <?php foreach ($headers_request as $name => $data): ?>
                     <tr>
@@ -231,7 +232,8 @@ table.debug th {
                     </tr>
                 <?php endforeach; ?>
             </table>
-
+            
+            <h2><?php echo $this->getText('LABEL_HEADER_RES') ?></h2>
             <table class="debug">
                 <?php foreach ($headers_response as $name => $data): ?>
                     <tr>

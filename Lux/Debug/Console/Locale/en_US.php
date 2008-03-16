@@ -12,6 +12,9 @@ return array(
     'LABEL_DIFF_PERCENT' => '%',
     'LABEL_DIFF_PERCENT_CUM' => 'Cumulative %',
     
+    'LABEL_HEADER_REQ' => 'Request headers',
+    'LABEL_HEADER_RES' => 'Response headers',
+    
     'TEXT_OPEN_DEBUG' => "Open debugger",
     'TEXT_CLOSE'      => 'Close',
 );
