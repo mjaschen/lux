@@ -111,11 +111,14 @@ class Lux_Debug_Console extends Solar_Base {
         
         // new view object
         $view = Solar::factory('Solar_View');
-        
-        $path = str_replace('_', DIRECTORY_SEPARATOR, get_class($this));
+        $class = get_class($this);
+        $path = str_replace('_', DIRECTORY_SEPARATOR, $class);
         $path .= DIRECTORY_SEPARATOR . 'View';
         
         $view->setTemplatePath($path);
+        
+        // set the locale class for the getText helper
+        $view->getHelper('getTextRaw')->setClass($class);
         
         // generate output
         echo $view->partial(
