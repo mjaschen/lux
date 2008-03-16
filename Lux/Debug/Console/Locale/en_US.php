@@ -9,6 +9,9 @@ return array(
     'LABEL_SQL_TIME'    => 'Execution time',
     'LABEL_SQL_STRING'  => 'SQL',
     
+    'LABEL_DIFF_PERCENT' => 'Elapsed percent',
+    'LABEL_DIFF_PERCENT_CUM' => 'Elapsed Cumulative',
+    
     'TEXT_OPEN_DEBUG' => "Open debugger",
     'TEXT_CLOSE'      => 'Close',
 );

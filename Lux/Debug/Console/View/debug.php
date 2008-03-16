@@ -134,6 +134,7 @@ table.debug th {
     color: #497FCF;
     font-family: "Century Gothic","Trebuchet MS",Arial,Helvetica,sans-serif;
     font-weight: bold;
+    text-transform: capitalize;
 }
 </style>
 <div id="debug-wrapper">
@@ -164,14 +165,27 @@ table.debug th {
                     <th><?php echo $locale->fetch('Solar_Debug_Timer', 'LABEL_NAME') ?></th>
                     <th><?php echo $locale->fetch('Solar_Debug_Timer', 'LABEL_TIME') ?></th>
                     <th><?php echo $locale->fetch('Solar_Debug_Timer', 'LABEL_DIFF') ?></th>
+                    <th><?php echo $this->getText('LABEL_DIFF_PERCENT') ?></th>
                     <th><?php echo $locale->fetch('Solar_Debug_Timer', 'LABEL_TOTAL') ?></th>
+                    <th><?php echo $this->getText('LABEL_DIFF_PERCENT_CUM') ?></th>
                 </tr>
+                <?php
+                    $total = $timer[count($timer) - 1]['total'];
+                    $cumulative = 0;
+                    //$total = $stop['total'];
+                ?>
                 <?php foreach ($timer as $mark): ?>
+                    <?php
+                        $percent = round(($mark['diff'] / $total) * 100);
+                        $cumulative += $percent;
+                    ?>
                     <tr>
                         <td><?php echo $this->escape($mark['name']) ?></td>
                         <td><?php echo $mark['time'] ?></td>
                         <td><?php echo $mark['diff'] ?></td>
+                        <td><?php echo $percent . ' %' ?></td>
                         <td><?php echo $mark['total'] ?></td>
+                        <td><?php echo $cumulative . ' %' ?></td>
                     </tr>
                 <?php endforeach; ?>
             </table>
