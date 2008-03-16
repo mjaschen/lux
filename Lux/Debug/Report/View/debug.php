@@ -1,8 +1,8 @@
 <script type="text/javascript">
 $(document).ready(function() {
-    $('.debug-tabs li a').click(function() {
+    $('#debug-tabs li a').click(function() {
         // remove tab highlighting
-        $('.debug-tabs li a').removeClass('selected');
+        $('#debug-tabs li a').removeClass('selected');
         
         // highlight tab
         $(this).addClass('selected');
@@ -83,24 +83,24 @@ div.debug-toggle p {
 /*-------------------------------------------------
   Tabs
 -------------------------------------------------*/
-ul.debug-tabs {
+ul#debug-tabs {
     list-style: none;
     padding: 0 0 4px 0;
     margin: 0;
     border-bottom: 1px solid #0033AA;
 }
 
-ul.debug-tabs li {
+ul#debug-tabs li {
     display: inline;
     padding: 0;
     margin: 0;
 }
 
-ul.debug-tabs li a {
+ul#debug-tabs li a {
     padding: 5px 10px;
 }
 
-ul.debug-tabs li a.selected {
+ul#debug-tabs li a.selected {
     background-color: #0033AA;
     color: #FFFFFF;
 }
@@ -140,7 +140,7 @@ table.debug th {
 <div id="debug-wrapper">
     <div id="debug">
 
-        <ul class="debug-tabs">
+        <ul id="debug-tabs">
             <li><a id="toggle-info" href=""><?php echo $this->getText('LABEL_INFO') ?></a></li>
             <li><a id="toggle-headers" href=""><?php echo $this->getText('LABEL_HEADER') ?></a></li>
             <li><a id="toggle-profile" href=""><?php echo $this->getText('LABEL_TIMER') ?></a></li>
