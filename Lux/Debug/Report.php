@@ -13,7 +13,7 @@
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-class Lux_Debug_Console extends Solar_Base {
+class Lux_Debug_Report extends Solar_Base {
     
     /**
      * 
@@ -36,7 +36,7 @@ class Lux_Debug_Console extends Solar_Base {
      * @var array
      * 
      */
-    protected $_Lux_Debug_Console = array(
+    protected $_Lux_Debug_Report = array(
         'sql'       => 'sql',
         'timer'     => 'timer',
         'view_path' => array(),
