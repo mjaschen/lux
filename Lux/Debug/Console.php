@@ -27,6 +27,9 @@ class Lux_Debug_Console extends Solar_Base {
      * `timer`
      * : (dependency) Solar_Debug_Timer dependency
      * 
+     * `view_path`
+     * : (array) Add these paths to the template path stack
+     * 
      * `partial`
      * : (string) Template partial name
      * 
@@ -34,9 +37,10 @@ class Lux_Debug_Console extends Solar_Base {
      * 
      */
     protected $_Lux_Debug_Console = array(
-        'sql'     => 'sql',
-        'timer'   => 'timer',
-        'partial' => 'debug',
+        'sql'       => 'sql',
+        'timer'     => 'timer',
+        'view_path' => array(),
+        'partial'   => 'debug',
     );
     
     /**
@@ -48,6 +52,7 @@ class Lux_Debug_Console extends Solar_Base {
      */
     protected $_debug = array(
         'sql_profile'      => array(),
+        'timer'            => array(),
         'headers_request'  => array(),
         'headers_response' => array(),
         'method'           => null,
@@ -104,27 +109,43 @@ class Lux_Debug_Console extends Solar_Base {
         $this->_sqlProfile();
         
         // superglobals
-        $this->_superGlobals();
+        $this->_super();
         
         // both request and response headers
         $this->_headers();
         
-        // new view object
-        $view = Solar::factory('Solar_View');
-        $class = get_class($this);
-        $path = str_replace('_', DIRECTORY_SEPARATOR, $class);
-        $path .= DIRECTORY_SEPARATOR . 'View';
-        
-        $view->setTemplatePath($path);
-        
-        // set the locale class for the getText helper
-        $view->getHelper('getTextRaw')->setClass($class);
+        $view = $this->_setView();
         
         // generate output
         echo $view->partial(
             $this->_config['partial'],
             $this->_debug
         );
+    }
+    
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
+    protected function _setView()
+    {
+        // new view object
+        $view = Solar::factory('Solar_View');
+        $class = get_class($this);
+        $path = str_replace('_', DIRECTORY_SEPARATOR, $class);
+        $path .= DIRECTORY_SEPARATOR . 'View';
+        
+        // template path stack
+        $paths   = (array) $this->_config['view_path'];
+        $paths[] = $path;
+        
+        $view->setTemplatePath($paths);
+        
+        // set the locale class for the getText helper
+        $view->getHelper('getTextRaw')->setClass($class);
+        
+        return $view;
     }
     
     /**
@@ -160,13 +181,13 @@ class Lux_Debug_Console extends Solar_Base {
      * @return void
      * 
      */
-    protected function _superGlobals()
+    protected function _super()
     {
         $request = Solar_Registry::get('request');
         
         // get these
-        $supers = array('get', 'post', 'cookie');
-        foreach ($supers as $super) {
+        $list = array('get', 'post', 'cookie');
+        foreach ($list as $super) {
             $this->_debug['super'][$super] = $request->{$super};
         }
     }
