@@ -1,20 +1,27 @@
 <script type="text/javascript">
 $(document).ready(function() {
     $('.debug-tabs li a').click(function() {
+        // remove tab highlighting
         $('.debug-tabs li a').removeClass('selected');
+        
+        // highlight tab
         $(this).addClass('selected');
-
+        
+        // figure out which window to show
         var debug_id = this.id.replace(/toggle-/, '');
+        
+        // hide all windows
         $('div.debug').hide();
+        
+        // show only clicked
         $('#' + debug_id).show();
-
+        
         return false;
     });
-
+    
     // Open/close debugger dialog.
     $(document.body).append('<div class="debug-toggle"><p><?php echo $this->getText('TEXT_OPEN_DEBUG'); ?></p></div>');
     $('#debug-wrapper').append('<div class="debug-toggle"><?php echo $this->getText('TEXT_CLOSE'); ?></div>');
-
     $('.debug-toggle').click(function() {
         $('.debug-toggle').show();
         $(this).hide();
@@ -110,13 +117,8 @@ table.debug {
     border-collapse: collapse;
 }
 
-table.debug tr.odd td,
-table.debug thead td {
-    background: #F0F6FF;
-}
-
-table.debug .column1	{
-    background: #F9FCFE;
+table.debug td {
+    background: #eee;
 }
 
 table.debug td,
@@ -157,98 +159,75 @@ table.debug th {
             <?php
                 $locale = Solar_Registry::get('locale');
             ?>
-        <table class="debug">
-            <tr>
-                <th><?php echo $locale->fetch('Solar_Debug_Timer', 'LABEL_NAME') ?></th>
-                <th><?php echo $locale->fetch('Solar_Debug_Timer', 'LABEL_TIME') ?></th>
-                <th><?php echo $locale->fetch('Solar_Debug_Timer', 'LABEL_DIFF') ?></th>
-                <th><?php echo $locale->fetch('Solar_Debug_Timer', 'LABEL_TOTAL') ?></th>
-            </tr>
-            <?php
-            $i = 0;
-            foreach ($timer as $mark):
-                $class = $i == 0 ? '' : ' class="odd"';
-                $i = $i == 0 ? 1 : 0;
-            ?>
-                <tr<?php echo $class; ?>>
-                    <td><?php echo $this->escape($mark['name']) ?></td>
-                    <td><?php echo $mark['time'] ?></td>
-                    <td><?php echo $mark['diff'] ?></td>
-                    <td><?php echo $mark['total'] ?></td>
-                </tr>
-            <?php endforeach; ?>
-        </table>
-        </div>
-
-        <div class="debug" id="sql">
-
-        <?php if (! empty($sql_profile)): ?>
-        <table class="debug">
-            <tr>
-                <th><?php echo $this->getText('LABEL_SQL_TIME'); ?></th>
-                <th><?php echo $this->getText('LABEL_SQL_STRING'); ?></th>
-            </tr>
-            <?php foreach ($sql_profile as $query): ?>
+            <table class="debug">
                 <tr>
-                    <th><?php echo $this->escape($query[0]) ?></th>
-                    <td><pre><?php echo $this->escape($query[1]) ?></pre></td>
+                    <th><?php echo $locale->fetch('Solar_Debug_Timer', 'LABEL_NAME') ?></th>
+                    <th><?php echo $locale->fetch('Solar_Debug_Timer', 'LABEL_TIME') ?></th>
+                    <th><?php echo $locale->fetch('Solar_Debug_Timer', 'LABEL_DIFF') ?></th>
+                    <th><?php echo $locale->fetch('Solar_Debug_Timer', 'LABEL_TOTAL') ?></th>
                 </tr>
-            <?php endforeach; ?>
-        </table>
-        <?php endif; ?>
+                <?php foreach ($timer as $mark): ?>
+                    <tr>
+                        <td><?php echo $this->escape($mark['name']) ?></td>
+                        <td><?php echo $mark['time'] ?></td>
+                        <td><?php echo $mark['diff'] ?></td>
+                        <td><?php echo $mark['total'] ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
+        </div>
+        
+        
+        <div class="debug" id="sql">
+            <?php if (! empty($sql_profile)): ?>
+            <table class="debug">
+                <tr>
+                    <th><?php echo $this->getText('LABEL_SQL_TIME'); ?></th>
+                    <th><?php echo $this->getText('LABEL_SQL_STRING'); ?></th>
+                </tr>
+                <?php foreach ($sql_profile as $query): ?>
+                    <tr>
+                        <th><?php echo $this->escape($query[0]) ?></th>
+                        <td><pre><?php echo $this->escape($query[1]) ?></pre></td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
+            <?php endif; ?>
         </div>
 
         <!-- Superglobals -->
         <div class="debug" id="super">
-        <table class="debug">
-            <?php
-            $i = 0;
-            foreach ($super as $name => $data):
-                $class = $i == 0 ? '' : ' class="odd"';
-                $i = $i == 0 ? 1 : 0;
-            ?>
-                <tr<?php echo $class; ?>>
-                    <td><?php echo $name ?></td>
-                    <td><?php array_walk($data, array('Solar', 'dump')); ?></td>
-                </tr>
-            <?php endforeach; ?>
-        </table>
+            <table class="debug">
+                <?php foreach ($super as $name => $data): ?>
+                    <tr>
+                        <th><?php echo $name ?></th>
+                        <td><?php array_walk($data, array('Solar', 'dump')); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
         </div>
 
         <!-- Headers -->
         <div class="debug" id="headers">
-        <table class="debug">
-            <?php
-            $i = 0;
-            foreach ($headers_request as $name => $data):
-                $class = $i == 0 ? '' : ' class="odd"';
-                $i = $i == 0 ? 1 : 0;
-            ?>
-                <tr<?php echo $class; ?>>
-                    <th><?php echo $name ?></th>
-                    <td><?php echo $this->escape($data) ?></td>
-                </tr>
-            <?php endforeach; ?>
-        </table>
+            <table class="debug">
+                <?php foreach ($headers_request as $name => $data): ?>
+                    <tr>
+                        <th><?php echo $name ?></th>
+                        <td><?php echo $this->escape($data) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
 
-        <table class="debug">
-            <?php
-            $i = 0;
-            foreach ($headers_response as $name => $data):
-                $class = $i == 0 ? '' : ' class="odd"';
-                $i = $i == 0 ? 1 : 0;
-            ?>
-                <tr<?php echo $class; ?>>
-                    <th><?php echo $name ?></th>
-                    <td><?php echo $this->escape($data) ?></td>
-                </tr>
-            <?php endforeach; ?>
-        </table>
-
+            <table class="debug">
+                <?php foreach ($headers_response as $name => $data): ?>
+                    <tr>
+                        <th><?php echo $name ?></th>
+                        <td><?php echo $this->escape($data) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
         </div>
-
-        <div class="debug" id="headers-response">
-        </div>
-
+        
+    <!-- End #debug -->
     </div>
 </div>
