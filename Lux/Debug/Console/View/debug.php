@@ -138,11 +138,11 @@ table.debug th {
     <div id="debug">
 
         <ul class="debug-tabs">
-            <li><a id="toggle-info" href="">Info</a></li>
-            <li><a id="toggle-profile" href="">Profiler</a></li>
-            <li><a id="toggle-sql" href="">SQL profiling</a></li>
-            <li><a id="toggle-super" href="">Superglobals</a></li>
-            <li><a id="toggle-headers" href="">Headers</a></li>
+            <li><a id="toggle-info" href=""><?php echo $this->getText('LABEL_INFO') ?></a></li>
+            <li><a id="toggle-headers" href=""><?php echo $this->getText('LABEL_HEADER') ?></a></li>
+            <li><a id="toggle-profile" href=""><?php echo $this->getText('LABEL_TIMER') ?></a></li>
+            <li><a id="toggle-sql" href=""><?php echo $this->getText('LABEL_SQL_PROFILE') ?></a></li>
+            <li><a id="toggle-super" href=""><?php echo $this->getText('LABEL_SUPER') ?></a></li>
         </ul>
 
         <div class="debug" id="info" style="display: inline;">
