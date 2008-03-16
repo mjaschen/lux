@@ -124,9 +124,14 @@ class Lux_Debug_Report extends Solar_Base {
     }
     
     /**
-     * Undocumented function
-     *
-     * @return void
+     * 
+     * Sets view object
+     * 
+     * Adds to template path stack and
+     * sets class for getText helper.
+     * 
+     * @return Solar_View
+     * 
      */
     protected function _setView()
     {
