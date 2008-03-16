@@ -12,8 +12,8 @@ $(document).ready(function() {
     });
 
     // Open/close debugger dialog.
-    $(document.body).append('<div class="debug-toggle"><p>open debugger</p></div>');
-    $('#debug-wrapper').append('<div class="debug-toggle"><p>close</p></div>');
+    $(document.body).append('<div class="debug-toggle"><p><?php echo $this->getText('TEXT_OPEN_DEBUG'); ?></p></div>');
+    $('#debug-wrapper').append('<div class="debug-toggle"><?php echo $this->getText('TEXT_CLOSE'); ?></div>');
 
     $('.debug-toggle').click(function() {
         $('.debug-toggle').show();
@@ -40,7 +40,6 @@ div#debug {
     top: 0;
     right: 0;
     width: auto;
-    height: 500px;
     background-color: #fff;
     text-align: left;
     padding: 10px;
@@ -146,7 +145,7 @@ table.debug th {
             <li><a id="toggle-headers" href="">Headers</a></li>
         </ul>
 
-        <div class="debug" id="info">
+        <div class="debug" id="info" style="display: inline;">
         <table class="debug">
             <tr>
                 <th><?php echo $this->getText('LABEL_REQUEST') ?></th><td><?php echo strtoupper($method) ?></td>
@@ -155,12 +154,15 @@ table.debug th {
         </div>
 
         <div class="debug" id="profile">
+            <?php
+                $locale = Solar_Registry::get('locale');
+            ?>
         <table class="debug">
             <tr>
-                <th><?php echo $this->getText('LABEL_NAME') ?></th>
-                <th><?php echo $this->getText('LABEL_TIME') ?></th>
-                <th><?php echo $this->getText('LABEL_DIFF') ?></th>
-                <th><?php echo $this->getText('LABEL_TOTAL') ?></th>
+                <th><?php echo $locale->fetch('Solar_Debug_Timer', 'LABEL_NAME') ?></th>
+                <th><?php echo $locale->fetch('Solar_Debug_Timer', 'LABEL_TIME') ?></th>
+                <th><?php echo $locale->fetch('Solar_Debug_Timer', 'LABEL_DIFF') ?></th>
+                <th><?php echo $locale->fetch('Solar_Debug_Timer', 'LABEL_TOTAL') ?></th>
             </tr>
             <?php
             $i = 0;
@@ -182,6 +184,10 @@ table.debug th {
 
         <?php if (! empty($sql_profile)): ?>
         <table class="debug">
+            <tr>
+                <th><?php echo $this->getText('LABEL_SQL_TIME'); ?></th>
+                <th><?php echo $this->getText('LABEL_SQL_STRING'); ?></th>
+            </tr>
             <?php foreach ($sql_profile as $query): ?>
                 <tr>
                     <th><?php echo $this->escape($query[0]) ?></th>
