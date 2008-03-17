@@ -47,7 +47,95 @@ class Lux_Git_Repo extends Lux_Git {
         // run command
         $lines = $this->run('log', $opts, $ref);
         
-        return $lines;
+        // add one empty line so the loop ends cleanly
+        $lines[] = '';
+        
         // parse...
+        
+        // commit 457e9f562731a3d9e18c078fa3deb5e3ccced89d
+        // tree e1de956a91fa756a321bdd3f96b703f8fd81042c
+        // parent 81cae1604237ac48869374c76b869e84c933c0d6
+        // author Antti Holvikari <anttih@gmail.com> 1205593549 +0200
+        // committer Antti Holvikari <anttih@gmail.com> 1205593549 +0200
+        // 
+        //     <msg>
+        // 
+        
+        // list of commits
+        $commits = array();
+        
+        // line count
+        $count = count($lines);
+        
+        $i = 0;
+        while ($i < $count) {
+            
+            // these are the keys we're looking for
+            $commit = array(
+                'commit'          => null,
+                'tree'            => null,
+                'parent'          => null,
+                'author'          => null,
+                'author_email'    => null,
+                'author_time'     => null,
+                'committer'       => null,
+                'committer_email' => null,
+                'committer_time'  => null,
+                'msg'             => '',
+            );
+            
+            // commit, tree and parent lines
+            $list = array('commit', 'tree', 'parent');
+            foreach ($list as $key) {
+                $info = explode(' ', $lines[$i]);
+                $commit[$key] = $info[1];
+                $i++;
+            }
+            
+            // author and committer lines
+            $list = array('author', 'committer');
+            foreach ($list as $key) {
+                // author
+                $line = explode(' ', $lines[$i]);
+                
+                // take off the literal "author"
+                array_shift($line);
+                
+                // timezone and unix timestamp
+                $offset = array_pop($line);
+                $time   = array_pop($line);
+                
+                // email
+                $email = str_replace(array('<', '>'), '', array_pop($line));
+                
+                $commit["{$key}_time"]  = "$time $offset";
+                $commit["{$key}_email"] = $email;
+                
+                // the rest as the person name
+                $commit[$key] = implode(' ', $line);
+                
+                $i++;
+            }
+            
+            // skip empty line
+            $i++;
+            
+            $msg = array();
+            // look for message until there's
+            // a new line or lines run out
+            while ($lines[$i] != '') {
+                $msg[] = trim($lines[$i]);
+                $i++;
+            }
+            $commit['msg'] = implode("\n", $msg);
+            
+            // add to commits
+            $commits[] = $commit;
+            
+            // skip empty line
+            $i++;
+        }
+        
+        return $commits;
     }
 }
