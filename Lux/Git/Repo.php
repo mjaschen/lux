@@ -81,7 +81,7 @@ class Lux_Git_Repo extends Lux_Git {
                 'committer'       => null,
                 'committer_email' => null,
                 'committer_time'  => null,
-                'msg'             => '',
+                'msg'             => array(),
             );
             
             // commit, tree and parent lines
@@ -120,14 +120,12 @@ class Lux_Git_Repo extends Lux_Git {
             // skip empty line
             $i++;
             
-            $msg = array();
             // look for message until there's
             // a new line or lines run out
             while ($lines[$i] != '') {
-                $msg[] = trim($lines[$i]);
+                $commit['msg'][] = trim($lines[$i]);
                 $i++;
             }
-            $commit['msg'] = implode("\n", $msg);
             
             // add to commits
             $commits[] = $commit;
