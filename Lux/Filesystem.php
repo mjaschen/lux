@@ -78,12 +78,15 @@ class Lux_Filesystem extends Solar_Base
 
     /**
      *
-     * Deletes a directory recursivelly.
+     * Deletes a directory or directory files recursivelly.
      *
      * @param string $path Directory path.
      *
+     * @param bool $remove_dir If false, keeps the directory structure, removing
+     * only files.
+     *
      */
-    public function rmDir($path)
+    public function rmDir($path, $remove_dir = true)
     {
         if (is_file($path)) {
             // Single file deletion.
@@ -98,11 +101,13 @@ class Lux_Filesystem extends Solar_Base
             if ($file->isDot()) {
                 continue;
             }
-            $this->rmDir($file->getPathname());
+            $this->rmDir($file->getPathname(), $remove_dir);
         }
 
         // Delete the directory itself.
-        rmdir($path);
+        if ($remove_dir) {
+            rmdir($path);
+        }
     }
 
     /**
