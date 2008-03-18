@@ -47,8 +47,10 @@ class Lux_Git_Repo extends Lux_Git {
         // run command
         $lines = $this->run('log', $opts, $ref);
         
-        // add one empty line so the loop ends cleanly
-        $lines[] = '';
+        if (is_int($lines)) {
+            // failed for some reason
+            return $lines;
+        }
         
         // parse...
         
@@ -133,8 +135,8 @@ class Lux_Git_Repo extends Lux_Git {
             
             $msg = array();
             
-            // look for message until there's an empty line
-            while ($lines[$i] != '') {
+            // look for message until a new commit starts
+            while ($i < $count && substr($lines[$i], 0, 6) != 'commit') {
                 $msg[] = trim($lines[$i]);
                 $i++;
             }
@@ -143,9 +145,6 @@ class Lux_Git_Repo extends Lux_Git {
             
             // add to commits
             $commits[] = $commit;
-            
-            // skip empty line
-            $i++;
         }
         
         return $commits;
