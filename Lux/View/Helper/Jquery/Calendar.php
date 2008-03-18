@@ -70,7 +70,7 @@ class Lux_View_Helper_Jquery_Calendar extends Solar_View_Helper
         }
 
         // Encode configuration.
-        $config = $this->_view->jquery()->json()->encode($config);
+        $config = $this->_view->json()->encode($config);
 
         // Add inline script.
         $code = '$("' . $selector . '").calendar(' . $config . ');';

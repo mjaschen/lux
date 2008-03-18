@@ -65,7 +65,7 @@ class Lux_View_Helper_Jquery_Dialog extends Solar_View_Helper
     {
         if($config) {
             // Encode configuration.
-            $config = $this->_view->jquery()->json()->encode($config);
+            $config = $this->_view->json()->encode($config);
         } else {
             $config = '';
         }

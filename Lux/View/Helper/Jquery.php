@@ -65,15 +65,6 @@ class Lux_View_Helper_Jquery extends Solar_View_Helper
 
     /**
      *
-     * A JSON object, shared by jQuery helpers.
-     *
-     * @param Solar_Json
-     *
-     */
-    protected $_json;
-
-    /**
-     *
      * Constructor.
      *
      * @param array $config User-provided configuration values.
@@ -269,21 +260,5 @@ class Lux_View_Helper_Jquery extends Solar_View_Helper
         $class = 'Jquery_' . ucfirst($method);
         $helper = $this->_view->getHelper($class);
         return call_user_func_array(array($helper, $method), $params);
-    }
-
-    /**
-     *
-     * Returns a JSON object.
-     *
-     * @return Solar_Json
-     *
-     */
-    public function json()
-    {
-        if(!$this->_json) {
-            $this->_json = Solar::factory('Solar_Json');
-        }
-
-        return $this->_json;
     }
 }
