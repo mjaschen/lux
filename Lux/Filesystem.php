@@ -54,17 +54,17 @@ class Lux_Filesystem extends Solar_Base
 
         // Fix dir name: always end with a slash.
         $to = Solar_Dir::fix($to);
-        
+
         if (! file_exists($to)) {
             // Create destination dir.
-            $this->createDir($to);
+            mkdir($to, $this->_config['chmod_dir'], true);
         }
 
-        $iter = new DirectoryIterator($from); 
+        $iter = new DirectoryIterator($from);
 
         foreach ($iter as $file) {
             // Ignore dots and links.
-            if ($file->isDot() || (! $file->isFile() && ! $file->isDir())) {
+            if ($file->isDot()) {
                 continue;
             }
 
@@ -78,39 +78,31 @@ class Lux_Filesystem extends Solar_Base
 
     /**
      *
-     * Creates a directory.
+     * Deletes a directory recursivelly.
      *
      * @param string $path Directory path.
      *
-     * @param $chmod Directory permissions.
-     *
-     * @return bool True on success.
-     *
      */
-    public function createDir($path, $chmod = null)
+    public function rmDir($path)
     {
-        if (! $chmod) {
-            $chmod = $this->_config['chmod_dir'];
-        }
-        
-        $base_path = dirname($path);
-
-        if (! is_writable($base_path)) {
-            throw $this->_exception('ERR_DIRECTORY_NOT_WRITABLE', array(
-                'path' => $base_path,
-            ));
+        if (is_file($path)) {
+            // Single file deletion.
+            unlink($path);
+            return;
         }
 
-        $res = false;
-        if (! file_exists($path)) {
-            $umask = umask(0000);
-            if (mkdir($path)) {
-                $res = true;
+        $iter = new DirectoryIterator($path);
+
+        // Delete all files and dirs inside the directory.
+        foreach ($iter as $file) {
+            if ($file->isDot()) {
+                continue;
             }
-            umask($umask);
-            chmod($path, $chmod);
+            $this->rmDir($file->getPathname());
         }
-        return $res;
+
+        // Delete the directory itself.
+        rmdir($path);
     }
 
     /**
@@ -129,16 +121,15 @@ class Lux_Filesystem extends Solar_Base
         if (! $chmod) {
             $chmod = $this->_config['chmod_file'];
         }
-        
-        $res = false;
-        if (is_file($from)) {
+
+        $res = copy($from, $to);
+
+        if ($res) {
             $umask = umask(0000);
-            if (copy($from, $to)) {
-                $res = true;
-            }
-            umask($umask);
             chmod($to, $chmod);
+            umask($umask);
         }
+
         return $res;
     }
 
