@@ -52,16 +52,64 @@ class Lux_Git_Repo extends Lux_Git {
             return $lines;
         }
         
-        // parse...
+        return $this->_parseCommit($lines);
+    }
+    
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
+    public function branch()
+    {
+        $lines = $this->run('branch');
         
-        // commit 457e9f562731a3d9e18c078fa3deb5e3ccced89d
-        // tree e1de956a91fa756a321bdd3f96b703f8fd81042c
-        // parent 81cae1604237ac48869374c76b869e84c933c0d6
-        // author Antti Holvikari <anttih@gmail.com> 1205593549 +0200
-        // committer Antti Holvikari <anttih@gmail.com> 1205593549 +0200
-        // 
-        //     <msg>
-        // 
+        $branches = array();
+        foreach ($lines as $branch) {
+            $branches[] = trim(ltrim($branch, '*'));
+        }
+        
+        return $branches;
+    }
+    
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
+    public function commit($spec)
+    {
+        // options
+        $opts = array(
+            'pretty' => 'raw',
+            'n'      => 1,
+        );
+        
+        $lines = $this->run('log', $opts, $spec);
+        
+        if (is_int($lines)) {
+            return false;
+        }
+        
+        $commits = $this->_parseCommit($lines);
+        
+        // return commit object
+        return Solar::factory(
+            'Lux_Git_Commit',
+            array(
+                'repo' => $this,
+                'data' => $commits[0],
+            )
+        );
+    }
+    
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
+    protected function _parseCommit(&$lines)
+    {
         
         // list of commits
         $commits = array();
@@ -71,6 +119,19 @@ class Lux_Git_Repo extends Lux_Git {
         
         $i = 0;
         while ($i < $count) {
+            
+            // "raw" is this:
+            // @todo any better formats with `format:`?
+            
+            // commit 457e9f562731a3d9e18c078fa3deb5e3ccced89d
+            // tree e1de956a91fa756a321bdd3f96b703f8fd81042c
+            // parent 81cae1604237ac48869374c76b869e84c933c0d6
+            // author Antti Holvikari <anttih@gmail.com> 1205593549 +0200
+            // committer Antti Holvikari <anttih@gmail.com> 1205593549 +0200
+            // 
+            //     <msg>
+            // 
+            
             
             // these are the keys we're looking for
             $commit = array(
@@ -130,7 +191,7 @@ class Lux_Git_Repo extends Lux_Git {
             $i++;
             
             // first line is subject
-            $commit['subj'] = $lines[$i];
+            $commit['subj'] = trim($lines[$i]);
             $i++;
             
             $msg = array();
@@ -143,27 +204,10 @@ class Lux_Git_Repo extends Lux_Git {
             
             $commit['msg'] = implode("\n", $msg);
             
-            // add to commits
             $commits[] = $commit;
         }
         
+        // add to commits
         return $commits;
-    }
-    
-    /**
-     * Undocumented function
-     *
-     * @return void
-     */
-    public function branch()
-    {
-        $lines = $this->run('branch');
-        
-        $branches = array();
-        foreach ($lines as $branch) {
-            $branches[] = trim(ltrim($branch, '*'));
-        }
-        
-        return $branches;
     }
 }
