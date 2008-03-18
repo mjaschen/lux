@@ -73,6 +73,12 @@ class Lux_Git extends Solar_Base {
         // execute command
         exec($cmd, $lines, $exit);
         
+        // error exit code?
+        if ($exit > 0) {
+            return $exit;
+        }
+        
+        // done, return lines
         return $lines;
     }
 }
