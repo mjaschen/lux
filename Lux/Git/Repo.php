@@ -74,21 +74,28 @@ class Lux_Git_Repo extends Lux_Git {
             $commit = array(
                 'commit'          => null,
                 'tree'            => null,
-                'parent'          => null,
+                'parent'          => array(),
                 'author'          => null,
                 'author_email'    => null,
                 'author_time'     => null,
                 'committer'       => null,
                 'committer_email' => null,
                 'committer_time'  => null,
-                'msg'             => array(),
+                'subj'            => '',
+                'msg'             => '',
             );
             
             // commit, tree and parent lines
-            $list = array('commit', 'tree', 'parent');
+            $list = array('commit', 'tree');
             foreach ($list as $key) {
                 $info = explode(' ', $lines[$i]);
                 $commit[$key] = $info[1];
+                $i++;
+            }
+            
+            // parents: none or many
+            while (substr($lines[$i], 0, 6) == 'parent') {
+                $commit['parent'][] = ltrim($lines[$i], 'parent ');
                 $i++;
             }
             
@@ -120,12 +127,19 @@ class Lux_Git_Repo extends Lux_Git {
             // skip empty line
             $i++;
             
-            // look for message until there's
-            // a new line or lines run out
+            // first line is subject
+            $commit['subj'] = $lines[$i];
+            $i++;
+            
+            $msg = array();
+            
+            // look for message until there's an empty line
             while ($lines[$i] != '') {
-                $commit['msg'][] = trim($lines[$i]);
+                $msg[] = trim($lines[$i]);
                 $i++;
             }
+            
+            $commit['msg'] = implode("\n", $msg);
             
             // add to commits
             $commits[] = $commit;
@@ -135,5 +149,22 @@ class Lux_Git_Repo extends Lux_Git {
         }
         
         return $commits;
+    }
+    
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
+    public function branch()
+    {
+        $lines = $this->run('branch');
+        
+        $branches = array();
+        foreach ($lines as $branch) {
+            $branches[] = trim(ltrim($branch, '*'));
+        }
+        
+        return $branches;
     }
 }
