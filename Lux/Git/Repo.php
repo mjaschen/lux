@@ -1,20 +1,34 @@
 <?php
-
+/**
+ * 
+ * @category Lux
+ * 
+ * @package Lux_Git
+ * 
+ * @author Antti Holvikari <anttih@gmail.com>
+ * 
+ * @license http://opensource.org/licenses/bsd-license.php BSD
+ * 
+ */
 class Lux_Git_Repo extends Lux_Git {
     
     /**
-     * undocumented class variable
-     *
-     * @var string
+     * 
+     * Config keys
+     * 
+     * @var array
+     * 
      */
     protected $_Lux_Git_Repo = array(
         'git_dir'   => null,
     );
     
     /**
-     * Undocumented function
-     *
+     * 
+     * Config keys
+     * 
      * @return void
+     * 
      */
     public function __construct($config = null)
     {
@@ -32,9 +46,11 @@ class Lux_Git_Repo extends Lux_Git {
     }
     
     /**
-     * Undocumented function
-     *
+     * 
+     * Examines log
+     * 
      * @return void
+     * 
      */
     public function log($ref, $n = 10, $page = 1)
     {
@@ -56,9 +72,11 @@ class Lux_Git_Repo extends Lux_Git {
     }
     
     /**
-     * Undocumented function
-     *
+     * 
+     * Returns branches
+     * 
      * @return void
+     * 
      */
     public function branch()
     {
@@ -73,9 +91,11 @@ class Lux_Git_Repo extends Lux_Git {
     }
     
     /**
-     * Undocumented function
-     *
+     * 
+     * Gets one commit as a commit object
+     * 
      * @return void
+     * 
      */
     public function commit($spec)
     {
@@ -104,9 +124,11 @@ class Lux_Git_Repo extends Lux_Git {
     }
     
     /**
-     * Undocumented function
-     *
+     * 
+     * Parses commits from a set of lines
+     * 
      * @return void
+     * 
      */
     protected function _parseCommit(&$lines)
     {
