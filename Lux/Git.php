@@ -61,10 +61,7 @@ class Lux_Git extends Solar_Base {
         }
         
         // args
-        foreach ((array) $args as $arg) {
-            $arg = escapeshellarg($arg);
-            $cmd .= " $arg";
-        }
+        $cmd .= ' ' . implode(' ', (array) $args);
         
         $cmd = escapeshellcmd($cmd);
         
