@@ -64,12 +64,28 @@ class Lux_Git_Commit extends Solar_Struct {
         $i = 0;
         while ($i < $count) {
             $file = array(
+                'mode'  => null,
+                'bin'   => false,
                 'name'  => null,
                 'lines' => array(),
             );
             
             // take first line `diff --git ...`
-            $file[] = $lines[$i];
+            $file['lines'][] = $lines[$i];
+            
+            // file name
+            $pos = strpos($lines[$i], 'b/');
+            $file['name'] = substr($lines[$i], 13, $pos - 13);
+            
+            // mode: new, del
+            $mode = substr($lines[$i+1], 0, 3);
+            if ($mode == 'ind') {
+                $mode = 'chg';
+            }
+            $file['mode'] = $mode;
+            
+            // binary file?
+            $file['bin'] = substr($lines[$i+3], 0, 3) == 'Bin' ? true : false;
             
             // go to next line
             $i++;
