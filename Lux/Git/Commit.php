@@ -4,7 +4,7 @@ class Lux_Git_Commit extends Solar_Struct {
     
     /**
      * 
-     * undocumented class variable
+     * Config keys
      * 
      * @var string
      * 
@@ -16,7 +16,7 @@ class Lux_Git_Commit extends Solar_Struct {
     
     /**
      * 
-     * Undocumented function
+     * Constructor
      * 
      * @return void
      * 
