@@ -39,12 +39,27 @@ class Lux_Git extends Solar_Base {
     
     /**
      * 
+     * Overload method calls to git commands
+     * 
+     * @return void
+     * 
+     */
+    protected function __call($method, $args)
+    {
+        // gitLog => git-log
+        $method = strtolower(preg_replace('/([a-z])([A-Z])/', '$1-$2', $method));
+        
+        return $this->_run($method, $args[0], $args[1]);
+    }
+    
+    /**
+     * 
      * Runs specified git command and returns output
      * 
      * @return array Lines as array elements
      * 
      */
-    public function run($command, $opts = array(), $args = array())
+    protected function _run($command, $opts = array(), $args = array())
     {
         $cmd = $this->_binary
              . ' --git-dir=' . escapeshellarg($this->_git_dir)
@@ -53,15 +68,26 @@ class Lux_Git extends Solar_Base {
         // options
         foreach ((array) $opts as $opt => $val) {
             $val = escapeshellarg($val);
+            
+            // long option?
             if (strlen($opt) > 1) {
-                $cmd .= " --$opt=$val";
+                
+                // long option without value?
+                if (empty($val)) {
+                    $cmd .= " --$opt";
+                } else {
+                    $cmd .= " --$opt=$val";
+                }
+                
             } else {
                 $cmd .= " -$opt$val";
             }
         }
         
-        // args
-        $cmd .= ' ' . implode(' ', (array) $args);
+        // args?
+        if (! empty($args)) {
+            $cmd .= ' ' . implode(' ', (array) $args);
+        }
         
         $cmd = escapeshellcmd($cmd);
         
@@ -77,5 +103,37 @@ class Lux_Git extends Solar_Base {
         
         // done, return lines
         return $lines;
+    }
+    
+    /**
+     * 
+     * Sets `--git-dir`
+     * 
+     * Checks to see if dir exists
+     * 
+     * @return void
+     * 
+     */
+    public function setDir($dir)
+    {
+        // "fix" dir
+        $dir = Solar_Dir::fix($dir);
+        
+        // set dir
+        $this->_git_dir = $dir;
+        
+        $opts = array(
+            'git-dir' => null,
+        );
+        
+        $out = $this->_run('rev-parse', $opts);
+        
+        if (is_int($out)) {
+            throw $this->_exception(
+                'ERR_REPO_NOT_FOUND',
+                array('dir' => $dir)
+            );
+        }
+        
     }
 }

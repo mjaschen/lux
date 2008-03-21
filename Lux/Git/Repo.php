@@ -10,7 +10,7 @@
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-class Lux_Git_Repo extends Lux_Git {
+class Lux_Git_Repo extends Solar_Base {
     
     /**
      * 
@@ -20,8 +20,17 @@ class Lux_Git_Repo extends Lux_Git {
      * 
      */
     protected $_Lux_Git_Repo = array(
-        'git_dir'   => null,
+        'dir' => null,
     );
+    
+    /**
+     * 
+     * Git command-line tool
+     * 
+     * @var Lux_Git
+     * 
+     */
+    public $git;
     
     /**
      * 
@@ -34,15 +43,11 @@ class Lux_Git_Repo extends Lux_Git {
     {
         parent::__construct($config);
         
-        // "fix" and set --git-dir
-        $this->_git_dir = Solar_Dir::fix($this->_config['git_dir']);
+        // instantiate git commander
+        $this->git = Solar::factory('Lux_Git');
         
-        if (file_exists($this->_git_dir . DIRECTORY_SEPARATOR . '.git')) {
-            throw $this->_exception(
-                'ERR_REPO_NOT_BARE',
-                array('git-dir' => $this->_git_dir)
-            );
-        }
+        // set git-dir
+        $this->git->setDir($this->_config['dir']);
     }
     
     /**
@@ -61,7 +66,7 @@ class Lux_Git_Repo extends Lux_Git {
         );
         
         // run command
-        $lines = $this->run('log', $opts, $ref);
+        $lines = $this->git->log($opts, $ref);
         
         if (is_int($lines)) {
             // failed for some reason
@@ -80,7 +85,7 @@ class Lux_Git_Repo extends Lux_Git {
      */
     public function branch()
     {
-        $lines = $this->run('branch');
+        $lines = $this->git->branch();
         
         $branches = array();
         foreach ($lines as $branch) {
@@ -105,7 +110,7 @@ class Lux_Git_Repo extends Lux_Git {
             'n'      => 1,
         );
         
-        $lines = $this->run('log', $opts, $spec);
+        $lines = $this->git->log($opts, $spec);
         
         if (is_int($lines)) {
             return false;

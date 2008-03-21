@@ -56,7 +56,7 @@ class Lux_Git_Commit extends Solar_Struct {
             $arg = trim($commit) . ' ' . $this->commit;
         }
         
-        $lines = $this->_repo->run('diff', null, $arg);
+        $lines = $this->_repo->git->diff(null, $arg);
         
         $files = array();
         
