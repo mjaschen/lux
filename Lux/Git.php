@@ -48,6 +48,15 @@ class Lux_Git extends Solar_Base {
     
     /**
      * 
+     * List of run shell commands
+     * 
+     * @var array
+     * 
+     */
+    protected $_debug = array();
+    
+    /**
+     * 
      * Constructor
      * 
      * @param array $config Configuration keys
@@ -124,6 +133,8 @@ class Lux_Git extends Solar_Base {
         
         $lines = array();
         
+        $this->_debug[] = $cmd;
+        
         // execute command
         exec($cmd, $lines, $exit);
         
@@ -167,5 +178,17 @@ class Lux_Git extends Solar_Base {
                 array('dir' => $dir)
             );
         }
+    }
+    
+    /**
+     * 
+     * Get list of git commands than have been run
+     * 
+     * @return array List of shell commands
+     * 
+     */
+    public function getDebug()
+    {
+        return $this->_debug;
     }
 }
