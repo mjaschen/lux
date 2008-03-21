@@ -128,8 +128,13 @@ class Lux_Git_Commit extends Solar_Struct {
      * 
      * Returns parent commit object
      * 
+     * To get second parent, you'd do:
+     * 
+     *     $commit->parent()->parent()
+     * 
      * @param int $parent Index in parent array. I.e `0` would mean
-     * "first parent".
+     * first from the parents list. This does **not** mean first
+     * parent of this commit.
      * 
      * @return Lux_Git_Commit
      * 
