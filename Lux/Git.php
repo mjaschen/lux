@@ -1,34 +1,59 @@
 <?php
-
+/**
+ * 
+ * OO-wrapper around git command-line tools
+ * 
+ * @category Lux
+ * 
+ * @package Lux_Git
+ * 
+ * @author Antti Holvikari <anttih@gmail.com>
+ * 
+ * @license http://opensource.org/licenses/bsd-license.php BSD
+ * 
+ */
 class Lux_Git extends Solar_Base {
     
     /**
-     * undocumented class variable
-     *
-     * @var string
+     * 
+     * Config keys
+     * 
+     * `binary`
+     * : (string) Path to git binary
+     * 
+     * @var array
+     * 
      */
     protected $_Lux_Git = array(
         'binary' => '/usr/bin/env git',
     );
     
     /**
-     * undocumented class variable
-     *
+     * 
+     * Path to git binary
+     * 
      * @var string
+     * 
      */
     protected $_binary;
     
     /**
-     * undocumented class variable
-     *
+     * 
+     * Path to git repo
+     * 
      * @var string
+     * 
      */
     protected $_git_dir;
     
     /**
-     * Undocumented function
-     *
+     * 
+     * Constructor
+     * 
+     * @param array $config Configuration keys
+     * 
      * @return void
+     * 
      */
     public function __construct($config = null)
     {
@@ -39,7 +64,7 @@ class Lux_Git extends Solar_Base {
     
     /**
      * 
-     * Overload method calls to git commands
+     * Overloads method calls to git commands
      * 
      * @return void
      * 
@@ -55,6 +80,12 @@ class Lux_Git extends Solar_Base {
     /**
      * 
      * Runs specified git command and returns output
+     * 
+     * @param string $command Git sub-command
+     * 
+     * @param array $opts Options
+     * 
+     * @param array $args Additional arguments
      * 
      * @return array Lines as array elements
      * 
@@ -111,6 +142,8 @@ class Lux_Git extends Solar_Base {
      * 
      * Checks to see if dir exists
      * 
+     * @param string $dir Path to git-dir
+     * 
      * @return void
      * 
      */
@@ -134,6 +167,5 @@ class Lux_Git extends Solar_Base {
                 array('dir' => $dir)
             );
         }
-        
     }
 }

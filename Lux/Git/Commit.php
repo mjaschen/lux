@@ -1,16 +1,34 @@
 <?php
-
+/**
+ * 
+ * Class that represents one git commit
+ * 
+ * @category Lux
+ * 
+ * @package Lux_Git
+ * 
+ * @author Antti Holvikari <anttih@gmail.com>
+ * 
+ * @license http://opensource.org/licenses/bsd-license.php BSD
+ * 
+ */
 class Lux_Git_Commit extends Solar_Struct {
     
     /**
      * 
      * Config keys
      * 
-     * @var string
+     * `repo`
+     * : (dependency) Lux_Git_Repo dependency object
+     * 
+     * `data`
+     * : (array) Array of commit data
+     * 
+     * @var array
      * 
      */
     protected $_Lux_Git_Commit = array(
-        'repo' => array('Lux_Git_Repo'),
+        'repo' => null,
         'data' => array(),
     );
     
@@ -110,7 +128,10 @@ class Lux_Git_Commit extends Solar_Struct {
      * 
      * Returns parent commit object
      * 
-     * @return void
+     * @param int $parent Index in parent array. I.e `0` would mean
+     * "first parent".
+     * 
+     * @return Lux_Git_Commit
      * 
      */
     public function parent($parent = 0)
