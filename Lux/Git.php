@@ -182,6 +182,18 @@ class Lux_Git extends Solar_Base {
     
     /**
      * 
+     * Returns path to --git-dir
+     * 
+     * @return string Path with trailing slash
+     * 
+     */
+    public function getDir()
+    {
+        return $this->_git_dir;
+    }
+    
+    /**
+     * 
      * Get list of git commands than have been run
      * 
      * @return array List of shell commands

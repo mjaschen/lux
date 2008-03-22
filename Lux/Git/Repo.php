@@ -97,6 +97,19 @@ class Lux_Git_Repo extends Solar_Base {
     
     /**
      * 
+     * Fetches and returns repo description
+     * 
+     * @return string Description
+     * 
+     */
+    public function description()
+    {
+        $file = $this->git->getDir() . 'description';
+        return file_get_contents($file);
+    }
+    
+    /**
+     * 
      * Gets one commit as a commit object
      * 
      * @return void
