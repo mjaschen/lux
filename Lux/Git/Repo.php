@@ -110,6 +110,48 @@ class Lux_Git_Repo extends Solar_Base {
     
     /**
      * 
+     * Fetches and returns array of trees and blobs
+     * from a given tree object and optionally restricted
+     * to a path
+     * 
+     * @param string $tree Tree object name
+     * 
+     * @param string $path Path name
+     * 
+     * @return void
+     * 
+     */
+    public function tree($tree = 'HEAD', $path = null)
+    {
+        // run git ls-tree
+        $lines = $this->git->lsTree(null, array($tree, $path));
+        
+        // was there an error?
+        if (is_int($lines)) {
+            return false;
+        }
+        
+        $objects = array();
+        foreach ($lines as &$line) {
+            
+            $data = explode(' ', $line);
+            
+            list($sha1, $name) = explode("\t", $data[2]);
+            
+            $objects[] = array(
+                'mode' => $data[0],
+                'type' => $data[1],
+                'sha1' => $sha1,
+                'name' => $name,
+            );
+        }
+        
+        // all done!
+        return $objects;
+    }
+    
+    /**
+     * 
      * Gets one commit as a commit object
      * 
      * @return void
@@ -175,17 +217,19 @@ class Lux_Git_Repo extends Solar_Base {
             
             // these are the keys we're looking for
             $commit = array(
-                'commit'          => null,
-                'tree'            => null,
-                'parent'          => array(),
-                'author'          => null,
-                'author_email'    => null,
-                'author_time'     => null,
-                'committer'       => null,
-                'committer_email' => null,
-                'committer_time'  => null,
-                'subj'            => '',
-                'msg'             => '',
+                'commit'           => null,
+                'tree'             => null,
+                'parent'           => array(),
+                'author'           => null,
+                'author_email'     => null,
+                'author_time'      => null,
+                'author_offset'    => null,
+                'committer'        => null,
+                'committer_email'  => null,
+                'committer_time'   => null,
+                'committer_offset' => null,
+                'subj'             => '',
+                'msg'              => '',
             );
             
             // commit, tree and parent lines
@@ -212,13 +256,11 @@ class Lux_Git_Repo extends Solar_Base {
                 array_shift($line);
                 
                 // timezone and unix timestamp
-                $offset = array_pop($line);
-                $time   = array_pop($line);
+                $commit["{$key}_offset"] = array_pop($line);
+                $commit["{$key}_time"]   = array_pop($line);
                 
                 // email
                 $email = str_replace(array('<', '>'), '', array_pop($line));
-                
-                $commit["{$key}_time"]  = "$time $offset";
                 $commit["{$key}_email"] = $email;
                 
                 // the rest as the person name
