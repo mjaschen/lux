@@ -83,6 +83,14 @@ class Lux_Git extends Solar_Base {
         // gitLog => git-log
         $method = strtolower(preg_replace('/([a-z])([A-Z])/', '$1-$2', $method));
         
+        if (! isset($args[0])) {
+            $args[0] = null;
+        }
+        
+        if (! isset($args[1])) {
+            $args[1] = null;
+        }
+        
         return $this->_run($method, $args[0], $args[1]);
     }
     
