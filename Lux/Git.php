@@ -184,9 +184,11 @@ class Lux_Git extends Solar_Base {
             'git-dir' => null,
         );
         
-        $out = $this->_run('rev-parse', $opts);
-        
-        if (is_int($out)) {
+        try {
+            // check if this is a git repo
+            $out = $this->_run('rev-parse', $opts);
+        } catch (Lux_Git_Exception_InvalidCommand $e) {
+            
             throw $this->_exception(
                 'ERR_REPO_NOT_FOUND',
                 array('dir' => $dir)
