@@ -68,11 +68,6 @@ class Lux_Git_Repo extends Solar_Base {
         // run command
         $lines = $this->git->log($opts, $ref);
         
-        if (is_int($lines)) {
-            // failed for some reason
-            return $lines;
-        }
-        
         return $this->_parseCommit($lines);
     }
     
@@ -123,13 +118,8 @@ class Lux_Git_Repo extends Solar_Base {
      */
     public function tree($tree = 'HEAD', $path = null)
     {
-        // run git ls-tree
+        // run git ls-tree. this will throw on error.
         $lines = $this->git->lsTree(null, array($tree, $path));
-        
-        // was there an error?
-        if (is_int($lines)) {
-            return false;
-        }
         
         $objects = array();
         foreach ($lines as &$line) {
@@ -146,7 +136,7 @@ class Lux_Git_Repo extends Solar_Base {
             );
         }
         
-        // all done!
+        // all ok!
         return $objects;
     }
     
@@ -165,11 +155,8 @@ class Lux_Git_Repo extends Solar_Base {
             'n'      => 1,
         );
         
+        // run git command. this will throw on error.
         $lines = $this->git->log($opts, $spec);
-        
-        if (is_int($lines)) {
-            return false;
-        }
         
         $commits = $this->_parseCommit($lines);
         

@@ -148,7 +148,13 @@ class Lux_Git extends Solar_Base {
         
         // error exit code?
         if ($exit > 0) {
-            return $exit;
+            throw $this->_exception(
+                'ERR_INVALID_COMMAND',
+                array(
+                    'command' => $cmd,
+                    'exit'    => $exit,
+                )
+            );
         }
         
         // done, return lines
