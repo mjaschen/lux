@@ -158,6 +158,11 @@ class Lux_Git_Repo extends Solar_Base {
         // run git command. this will throw on error.
         $lines = $this->git->log($opts, $spec);
         
+        // if there was no lines, this was not a commit object
+        if (empty($lines)) {
+            throw $this->_exception('ERR_NOT_COMMIT');
+        }
+        
         $commits = $this->_parseCommit($lines);
         
         // return commit object
@@ -179,7 +184,6 @@ class Lux_Git_Repo extends Solar_Base {
      */
     protected function _parseCommit(&$lines)
     {
-        
         // list of commits
         $commits = array();
         
