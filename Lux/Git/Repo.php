@@ -124,14 +124,15 @@ class Lux_Git_Repo extends Solar_Base {
         $objects = array();
         foreach ($lines as &$line) {
             
-            $data = explode(' ', $line);
+            // take file name first
+            list($data, $name) = explode("\t", $line);
             
-            list($sha1, $name) = explode("\t", $data[2]);
+            $data = explode(' ', $data);
             
             $objects[] = array(
                 'mode' => $data[0],
                 'type' => $data[1],
-                'sha1' => $sha1,
+                'sha1' => $data[2],
                 'name' => $name,
             );
         }
