@@ -284,4 +284,25 @@ class Lux_Git_Repo extends Solar_Base {
         // add to commits
         return $commits;
     }
+    
+    /**
+     * 
+     * Gets object type for a given object name
+     * 
+     * @param string $object Object name. I.e `HEAD`.
+     * 
+     * @return string Object type.
+     * I.e `HEAD` would give you `commit`.
+     * 
+     */
+    public function objectType($object)
+    {
+        $opts = array(
+            't' => null,
+        );
+        
+        $line = $this->git->catFile($opts, $object);
+        
+        return $line[0];
+    }
 }
