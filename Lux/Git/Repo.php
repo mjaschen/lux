@@ -301,7 +301,16 @@ class Lux_Git_Repo extends Solar_Base {
             't' => null,
         );
         
-        $line = $this->git->catFile($opts, $object);
+        try {
+            // run git-cat-file -t
+            $line = $this->git->catFile($opts, $object);
+            
+        } catch (Lux_Git_Exception_InvalidCommand $e) {
+            // if we catch an error here it means the object
+            // is not valid object name so we can just return
+            // false
+            return false;
+        }
         
         return $line[0];
     }
