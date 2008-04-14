@@ -135,7 +135,7 @@ class Lux_Auth_Adapter_Psql extends Solar_Auth_Adapter_Sql
                 $this->_redirect();
             }
         }
-        
+
         // if auth it not valid, processing is allowed and this is not
         // a login attempt, try to login with cookie
         if (! $this->isValid() && $this->allow && ! $this->isLoginRequest()) {
@@ -260,26 +260,41 @@ class Lux_Auth_Adapter_Psql extends Solar_Auth_Adapter_Sql
                 $select->from($this->_config['table'])
                        ->cols($cols)
                        ->where("{$this->_config['handle_col']} = ?", $handle)
-                       ->multiWhere($this->_config['where']);
+                       ->multiWhere($this->_config['where'])
+                       ->limit(2);
                 
                 // fetch all
-               $data = $select->fetch('all');
+                $rows = $select->fetchAll();
                 
-                // user that used a cookie was found in the real auth table.
-                // fail authentication!
-                if (count($data) != 1) {
+                // user that used a cookie was found in the real auth table
+                if (count($rows) == 1) {
+                    
+                    // remove old token
+                    $this->_deleteToken($token);
+                    
+                    // make a new token and set the cookie
+                    $this->_newCookie($handle);
+                    
+                    // set base info
+                    $info = array('handle' => $handle);
+                    
+                    // set optional info from optional cols
+                    $row = current($rows);
+                    foreach ($optional as $key => $val) {
+                        if ($this->_config[$val]) {
+                            $info[$key] = $row[$this->_config[$val]];
+                        }
+                    }
+                    
+                    // successful login, treat result as user info
+                    $this->reset('VALID', $info);
+                    return true;
+                 
+                } else {
+                    // user that used a cookied was **not** found
+                    // in the real auth table. fail authentication!
                     return false;
                 }
-                
-                // remove old token
-                $this->_deleteToken($token);
-                
-                // make a new token and set the cookie
-                $this->_newCookie($handle);
-                
-                // successful login, treat result as user info
-                $this->reset('VALID', $data);
-                return true;
             }
         }
         
