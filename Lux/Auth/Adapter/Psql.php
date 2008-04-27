@@ -190,16 +190,61 @@ class Lux_Auth_Adapter_Psql extends Solar_Auth_Adapter_Sql
     protected function _processCookieLogin()
     {
         // get cookie
-        $cookie = $this->_request->cookie($this->_config['cookie_name'], false);
+        $cookie = $this->_getCookie();
         
-        if ($cookie) {
-            // parse cookie
-            list($identifier, $token) = explode(':', $cookie);
+        if (! $cookie) {
+            // no cookie, or could not parse cookie
+            return false;
+        }
+        
+        // get a selection tool using the dependency object
+        $select = Solar::factory(
+            'Solar_Sql_Select',
+            array('sql' => $this->_sql)
+        );
+        
+        $identifier_col = $this->_config['token_identifier_col'];
+        $token_col      = $this->_config['token_token_col'];
+        $timeout_col    = $this->_config['token_timeout_col'];
+        
+        // build select
+        $select->from($this->_config['token_table'])
+               ->cols(array($this->_config['token_handle_col']))
+               ->multiWhere(array(
+                   "$identifier_col = ?" => $cookie['identifier'],
+                   "$token_col = ?"      => $cookie['token'],
+                   "$timeout_col > ?"    => time(),
+               ));
+        
+        // fetch one row
+        $token_found = $select->fetch('one');
+        
+        if ($token_found) {
             
-            // sanity check
-            if (empty($identifier) || empty($token)) {
-                return false;
+            // now we need to fetch info from auth table
+            
+            $cols = array();
+            
+            // always fetch the handle
+            $cols[] = $this->_config['handle_col'];
+            
+            // list of optional columns as (property => field)
+            $optional = array(
+                'email'   => 'email_col',
+                'moniker' => 'moniker_col',
+                'uri'     => 'uri_col',
+                'uid'     => 'uid_col',
+            );
+            
+            // get optional columns
+            foreach ($optional as $key => $val) {
+                if ($this->_config[$val]) {
+                    $cols[] = $this->_config[$val];
+                }
             }
+            
+            // use user handle from the token table
+            $handle = $token_found[$this->_config['token_handle_col']];
             
             // get a selection tool using the dependency object
             $select = Solar::factory(
@@ -207,94 +252,44 @@ class Lux_Auth_Adapter_Psql extends Solar_Auth_Adapter_Sql
                 array('sql' => $this->_sql)
             );
             
-            $identifier_col = $this->_config['token_identifier_col'];
-            $token_col      = $this->_config['token_token_col'];
-            $timeout_col    = $this->_config['token_timeout_col'];
+            // build the select
+            $select->from($this->_config['table'])
+                   ->cols($cols)
+                   ->where("{$this->_config['handle_col']} = ?", $handle)
+                   ->multiWhere($this->_config['where'])
+                   ->limit(2);
             
-            // build select
-            $select->from($this->_config['token_table'])
-                   ->cols(array($this->_config['token_handle_col']))
-                   ->multiWhere(array(
-                       "$identifier_col = ?" => $identifier,
-                       "$token_col = ?"      => $token,
-                       "$timeout_col > ?"    => time(),
-                   ));
+            // fetch all
+            $rows = $select->fetchAll();
             
-            // fetch one row
-            $token_found = $select->fetch('one');
-            
-            if ($token_found) {
+            // did we found this user in the auth table?
+            if (count($rows) == 1) {
                 
-                // now we need to fetch info from auth table
+                // remove old token
+                $this->_deleteToken($cookie['token']);
                 
-                $cols = array();
+                // make a new token and set the cookie
+                $this->_newCookie($handle);
                 
-                // always fetch the handle
-                $cols[] = $this->_config['handle_col'];
+                // set base info
+                $info = array('handle' => $handle);
                 
-                // list of optional columns as (property => field)
-                $optional = array(
-                    'email'   => 'email_col',
-                    'moniker' => 'moniker_col',
-                    'uri'     => 'uri_col',
-                    'uid'     => 'uid_col',
-                );
-                
-                // get optional columns
+                // set optional info from optional cols
+                $row = current($rows);
                 foreach ($optional as $key => $val) {
                     if ($this->_config[$val]) {
-                        $cols[] = $this->_config[$val];
+                        $info[$key] = $row[$this->_config[$val]];
                     }
                 }
                 
-                // use user handle from the token table
-                $handle = $token_found[$this->_config['token_handle_col']];
-                
-                // get a selection tool using the dependency object
-                $select = Solar::factory(
-                    'Solar_Sql_Select',
-                    array('sql' => $this->_sql)
-                );
-                
-                // build the select
-                $select->from($this->_config['table'])
-                       ->cols($cols)
-                       ->where("{$this->_config['handle_col']} = ?", $handle)
-                       ->multiWhere($this->_config['where'])
-                       ->limit(2);
-                
-                // fetch all
-                $rows = $select->fetchAll();
-                
-                // user that used a cookie was found in the real auth table
-                if (count($rows) == 1) {
-                    
-                    // remove old token
-                    $this->_deleteToken($token);
-                    
-                    // make a new token and set the cookie
-                    $this->_newCookie($handle);
-                    
-                    // set base info
-                    $info = array('handle' => $handle);
-                    
-                    // set optional info from optional cols
-                    $row = current($rows);
-                    foreach ($optional as $key => $val) {
-                        if ($this->_config[$val]) {
-                            $info[$key] = $row[$this->_config[$val]];
-                        }
-                    }
-                    
-                    // successful login, treat result as user info
-                    $this->reset('VALID', $info);
-                    return true;
-                 
-                } else {
-                    // user that used a cookied was **not** found
-                    // in the real auth table. fail authentication!
-                    return false;
-                }
+                // successful login, treat result as user info
+                $this->reset('VALID', $info);
+                return true;
+             
+            } else {
+                // user that used a cookie was **not** found
+                // in the real auth table. fail authentication!
+                return false;
             }
         }
         
@@ -356,19 +351,27 @@ class Lux_Auth_Adapter_Psql extends Solar_Auth_Adapter_Sql
     }
     
     /**
-     *
+     * 
      * Adapter-specific logout processing.
-     *
+     * 
      * @return string A status code string for reset().
-     *
+     * 
      */
     protected function _processLogout()
     {
         // first, log us out
         $status = parent::_processLogout();
         
-        // delete auth cookie
-        $this->_setCookie('DELETED', time());
+        // get cookie
+        $cookie = $this->_getCookie();
+        
+        if ($cookie) {
+            // remove token from database
+            $this->_deteleToken($cookie['token']);
+            
+            // delete auth cookie
+            $this->_setCookie('DELETED', time());
+        }
         
         // return status from parent
         return $status;
@@ -396,6 +399,37 @@ class Lux_Auth_Adapter_Psql extends Solar_Auth_Adapter_Sql
             $this->_config['cookie_domain'],
             $this->_config['cookie_secure'],
             $this->_config['cookie_httponly']
+        );
+    }
+    
+    /**
+     * 
+     * Gets cookie and breaks it down into an identifier and a token
+     * 
+     * @return mixed Array of identifier and token,
+     * otherwise boolean false
+     * 
+     */
+    protected function _getCookie()
+    {
+        // get cookie
+        $cookie = $this->_request->cookie($this->_config['cookie_name'], false);
+        
+        if (! $cookie) {
+            return false;
+        }
+        
+        // parse cookie
+        list($identifier, $token) = explode(':', $cookie);
+        
+        // sanity check
+        if (empty($identifier) || empty($token)) {
+            return false;
+        }
+        
+        return array(
+            'identifier' => $identifier,
+            'token'      => $token,
         );
     }
     
