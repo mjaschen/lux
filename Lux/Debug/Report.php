@@ -53,6 +53,7 @@ class Lux_Debug_Report extends Solar_Base {
     protected $_debug = array(
         'sql_profile'      => array(),
         'timer'            => array(),
+        'var_dump'         => array(),
         'headers_request'  => array(),
         'headers_response' => array(),
         'method'           => null,
@@ -74,6 +75,15 @@ class Lux_Debug_Report extends Solar_Base {
     
     /**
      * 
+     * undocumented class variable
+     * 
+     * @var string
+     * 
+     */
+    protected $_debug_var;
+    
+    /**
+     * 
      * Constructor
      * 
      * @return void
@@ -88,6 +98,8 @@ class Lux_Debug_Report extends Solar_Base {
             'Solar_Debug_Timer',
             $this->_config['timer']
         );
+        
+        $this->_debug_var = Solar::factory('Solar_Debug_Var');
     }
     
     /**
@@ -121,6 +133,24 @@ class Lux_Debug_Report extends Solar_Base {
             $this->_config['partial'],
             $this->_debug
         );
+    }
+    
+    /**
+     * 
+     * Runs var_dump() on a variable and stores that
+     * output to be displayed in the debugger
+     * 
+     * @param mixed $var Variable to be displayed
+     * 
+     * @param string $label Label for the variable
+     * 
+     * @return void
+     * 
+     */
+    public function varDump($var, $label)
+    {
+        // put var_dump() output into an array with $label as the key
+        $this->_debug['var_dump'][$label] = $this->_debug_var->fetch($var);
     }
     
     /**

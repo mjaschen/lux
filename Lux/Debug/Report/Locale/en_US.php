@@ -1,6 +1,7 @@
 <?php
 return array(
     'LABEL_INFO'        => 'Info',
+    'LABEL_VAR_DUMP'    => 'Variables',
     'LABEL_HEADER'      => 'Headers',
     'LABEL_TIMER'       => 'Timer',
     'LABEL_SQL_PROFILE' => 'SQL Profiler',

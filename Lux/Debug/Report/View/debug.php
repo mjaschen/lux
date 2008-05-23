@@ -142,6 +142,7 @@ table.debug th {
 
         <ul id="debug-tabs">
             <li><a id="toggle-info" href=""><?php echo $this->getText('LABEL_INFO') ?></a></li>
+            <li><a id="toggle-var-dump" href=""><?php echo $this->getText('LABEL_VAR_DUMP') ?></a></li>
             <li><a id="toggle-headers" href=""><?php echo $this->getText('LABEL_HEADER') ?></a></li>
             <li><a id="toggle-profile" href=""><?php echo $this->getText('LABEL_TIMER') ?></a></li>
             <li><a id="toggle-sql" href=""><?php echo $this->getText('LABEL_SQL_PROFILE') ?></a></li>
@@ -156,6 +157,14 @@ table.debug th {
         </table>
         </div>
 
+        <div class="debug" id="var-dump">
+            <ul>
+            <?php foreach ($var_dump as $label => $var): ?>
+                <li><label><?php echo $this->escape($label) ?></label> <pre><?php echo $this->escape($var) ?></pre></li>
+            <?php endforeach; ?>
+            </ul>
+        </div>
+        
         <div class="debug" id="profile">
             <?php
                 $locale = Solar_Registry::get('locale');
