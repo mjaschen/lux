@@ -47,6 +47,8 @@ class Lux_Debug_Report extends Solar_Base {
      * 
      * Debugging info
      * 
+     * These keys get assigned to the view
+     * 
      * @var array
      * 
      */
