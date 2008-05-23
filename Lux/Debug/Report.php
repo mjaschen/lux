@@ -75,9 +75,9 @@ class Lux_Debug_Report extends Solar_Base {
     
     /**
      * 
-     * undocumented class variable
+     * Solar_Debug_Var object
      * 
-     * @var string
+     * @var Solar_Debug_Var
      * 
      */
     protected $_debug_var;
