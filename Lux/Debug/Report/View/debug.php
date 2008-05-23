@@ -157,6 +157,7 @@ table.debug th {
         </table>
         </div>
 
+        <!-- Variables -->
         <div class="debug" id="var-dump">
             <ul>
             <?php foreach ($var_dump as $label => $var): ?>
@@ -200,7 +201,7 @@ table.debug th {
             </table>
         </div>
         
-        
+        <!-- SQL profile -->
         <div class="debug" id="sql">
             <?php if (! empty($sql_profile)): ?>
             <table class="debug">
