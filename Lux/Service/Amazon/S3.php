@@ -69,8 +69,7 @@ class Lux_Service_Amazon_S3 extends Solar_Base
             'Lux_Service_Amazon_S3_Resource_Bucket',
             array('s3' => $this)
         );
-        $bucket->bucket = $name;
-        
+        $bucket->name = $name;
         return $bucket;
     }
     
@@ -169,11 +168,11 @@ class Lux_Service_Amazon_S3 extends Solar_Base
         $canon_resource = '/';
         if ($resource instanceof Lux_Service_Amazon_S3_Resource_Bucket
         || $resource instanceof Lux_Service_Amazon_S3_Resource_Object) {
-            $canon_resource .= $resource->bucket . '/';
+            $canon_resource .= $resource->getBucketName() . '/';
         }
         
         if (! empty($uri->path)) {
-            $canon_resource .= implode('/', $uri->path);
+            $canon_resource .= implode('/', $uri->path) . '.' . $uri->format;
         }
         
         $content_md5 = '';
@@ -223,10 +222,11 @@ class Lux_Service_Amazon_S3 extends Solar_Base
         // only http for now
         $uri->scheme = 'http';
         
+        $uri->host = $this->_endpoint;
+        
         if (! $resource instanceof Lux_Service_Amazon_S3_Resource_Service) {
-            $uri->host = "{$resource->bucket}.{$this->_endpoint}";
-        } else {
-            $uri->host = $this->_endpoint;
+            $bucket = $resource->getBucketName();
+            $uri->host = "$bucket.{$this->_endpoint}";
         }
         
         // requests on objects set the object key in the path
