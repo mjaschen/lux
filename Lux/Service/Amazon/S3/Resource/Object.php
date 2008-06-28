@@ -17,24 +17,6 @@ class Lux_Service_Amazon_S3_Resource_Object extends Lux_Service_Amazon_S3_Resour
      * @var string
      * 
      */
-    public $key;
-    
-    /**
-     * 
-     * undocumented class variable
-     * 
-     * @var string
-     * 
-     */
-    public $content;
-    
-    /**
-     * 
-     * undocumented class variable
-     * 
-     * @var string
-     * 
-     */
     protected $_Lux_Service_Amazon_S3_Object = array(
         'bucket' => null,
     );
@@ -50,6 +32,24 @@ class Lux_Service_Amazon_S3_Resource_Object extends Lux_Service_Amazon_S3_Resour
     
     /**
      * 
+     * undocumented class variable
+     * 
+     * @var string
+     * 
+     */
+    public $key;
+    
+    /**
+     * 
+     * undocumented class variable
+     * 
+     * @var string
+     * 
+     */
+    public $content;
+    
+    /**
+     * 
      * Undocumented function
      * 
      * @return void
@@ -59,12 +59,16 @@ class Lux_Service_Amazon_S3_Resource_Object extends Lux_Service_Amazon_S3_Resour
     {
         parent::__construct($config);
         
-        if ($this->_config['bucket'] instanceof Lux_Service_Amazon_S3_Bucket) {
-            
+        // bucket given as an object?
+        if ($this->_config['bucket'] instanceof
+            Lux_Service_Amazon_S3_Resource_Bucket) {
+                
+            // set bucket from config
             $this->_bucket = $this->_config['bucket'];
             
         } elseif (is_string($this->_config['bucket'])) {
-            
+            // bucket given as a string.
+            // create a new bucket object.
             $this->_bucket = Solar::factory(
                 'Lux_Service_Amazon_S3_Bucket',
                 array('name' => $this->_config['bucket'])
@@ -79,11 +83,10 @@ class Lux_Service_Amazon_S3_Resource_Object extends Lux_Service_Amazon_S3_Resour
      * @return void
      * 
      */
-    public function load()
+    public function save()
     {
-        $this->s3->get($this);
-        
-        $this->_exists = true;
+        // make a PUT request and expect 200 OK
+        return $this->_s3->fetch('put', $this, 200);
     }
     
     /**
@@ -93,10 +96,9 @@ class Lux_Service_Amazon_S3_Resource_Object extends Lux_Service_Amazon_S3_Resour
      * @return void
      * 
      */
-    public function save()
+    public function getBucketName()
     {
-        // save this object
-        $this->_s3->fetch('put', $this);
+        return $this->_bucket->getBucketName();
     }
     
     /**
