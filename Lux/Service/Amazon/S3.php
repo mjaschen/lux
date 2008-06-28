@@ -97,7 +97,8 @@ class Lux_Service_Amazon_S3 extends Solar_Base
      * @return void
      * 
      */
-    public function fetch($method, $resource, $expect = 200, $params = array())
+    public function fetch($method, Lux_Service_Amazon_S3_Resource $resource,
+        $expect = 200, $params = array())
     {
         // new HTTP request
         $request = Solar::factory('Solar_Http_Request');
@@ -148,7 +149,8 @@ class Lux_Service_Amazon_S3 extends Solar_Base
      * @return void
      * 
      */
-    private function _sign(Solar_Http_Request_Adapter $request, $uri, $resource)
+    private function _sign(Solar_Http_Request_Adapter $request, $uri,
+        Lux_Service_Amazon_S3_Resource $resource)
     {
         // get all request options
         $opts = $request->getOptions();
@@ -215,7 +217,8 @@ class Lux_Service_Amazon_S3 extends Solar_Base
      * @return void
      * 
      */
-    protected function _buildUri($resource, $params = array())
+    protected function _buildUri(Lux_Service_Amazon_S3_Resource $resource,
+        $params = array())
     {
         $uri = Solar::factory('Solar_Uri');
         
