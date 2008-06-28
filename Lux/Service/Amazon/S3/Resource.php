@@ -17,15 +17,6 @@ abstract class Lux_Service_Amazon_S3_Resource extends Solar_Base
      * @var string
      * 
      */
-    public $bucket;
-    
-    /**
-     * 
-     * undocumented class variable
-     * 
-     * @var string
-     * 
-     */
     protected $_Lux_Service_Amazon_S3_Resource = array(
         's3' => null,
     );
@@ -73,6 +64,17 @@ abstract class Lux_Service_Amazon_S3_Resource extends Solar_Base
             'Lux_Service_Amazon_S3',
             $this->_config['s3']
         );
+    }
+    
+    /**
+     * 
+     * Undocumented function
+     * 
+     * @return void
+     * 
+     */
+    public function getBucketName() {
+        return null;
     }
     
     /**
