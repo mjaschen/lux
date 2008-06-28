@@ -1,0 +1,3 @@
+<?php
+class Lux_Service_Amazon_S3_Exception_NoSuchBucket extends Lux_Service_Amazon_S3_Exception
+{}

@@ -1,0 +1,3 @@
+<?php
+class Lux_Service_Amazon_S3_Exception_InvalidBucketName extends Lux_Service_Amazon_S3_Exception
+{}
