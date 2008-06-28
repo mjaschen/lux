@@ -45,7 +45,7 @@ class Lux_Service_Amazon_S3 extends Solar_Base
     
     /**
      * 
-     * Undocumented function
+     * Constructor
      * 
      * @return void
      * 
@@ -58,9 +58,11 @@ class Lux_Service_Amazon_S3 extends Solar_Base
     
     /**
      * 
-     * Undocumented function
+     * Gets a bucket object
      * 
-     * @return void
+     * @param string $name Name of the bucket
+     * 
+     * @return Lux_Service_Amazon_S3_Resource_Bucket
      * 
      */
     public function getBucket($name)
@@ -75,9 +77,9 @@ class Lux_Service_Amazon_S3 extends Solar_Base
     
     /**
      * 
-     * Undocumented function
+     * Fetches all buckets
      * 
-     * @return void
+     * @return array
      * 
      */
     public function fetchBuckets()
@@ -92,9 +94,19 @@ class Lux_Service_Amazon_S3 extends Solar_Base
     
     /**
      * 
-     * Undocumented function
+     * Makes an HTTP request to Amazon
      * 
-     * @return void
+     * @param string $method HTTP method
+     * 
+     * @param object $resource Resource object
+     * 
+     * @param int|array $expect Expect the HTTP status
+     * code to be one of these, if not, will throw an
+     * exception. 
+     * 
+     * @param array $params A list of query params
+     * 
+     * @return Solar_Http_Response
      * 
      */
     public function fetch($method, Lux_Service_Amazon_S3_Resource $resource,
@@ -144,12 +156,18 @@ class Lux_Service_Amazon_S3 extends Solar_Base
     
     /**
      * 
-     * Undocumented function
+     * Signs a request by adding Authorization header
+     * 
+     * @param object $request Request object
+     * 
+     * @param object $uri URI object
+     * 
+     * @param object $resource Resource object
      * 
      * @return void
      * 
      */
-    private function _sign(Solar_Http_Request_Adapter $request, $uri,
+    private function _sign(Solar_Http_Request_Adapter $request, Solar_Uri $uri,
         Lux_Service_Amazon_S3_Resource $resource)
     {
         // get all request options
@@ -212,9 +230,13 @@ class Lux_Service_Amazon_S3 extends Solar_Base
     
     /**
      * 
-     * Undocumented function
+     * Builds a URI object based
      * 
-     * @return void
+     * @param object $resource Amazon resource object
+     * 
+     * @param array $params Query parameters as an assoc array
+     * 
+     * @return Solar_Uri
      * 
      */
     protected function _buildUri(Lux_Service_Amazon_S3_Resource $resource,
@@ -247,9 +269,10 @@ class Lux_Service_Amazon_S3 extends Solar_Base
     
     /**
      * 
-     * Undocumented function
+     * Parses a response for error info and returns
+     * a correct exception class
      * 
-     * @return void
+     * @return Lux_Service_Amazon_S3_Exception
      * 
      */
     protected function _error(Solar_Http_Response $response)
