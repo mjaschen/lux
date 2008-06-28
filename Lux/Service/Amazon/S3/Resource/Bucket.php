@@ -13,6 +13,15 @@ class Lux_Service_Amazon_S3_Resource_Bucket extends Lux_Service_Amazon_S3_Resour
     
     /**
      * 
+     * undocumented class variable
+     * 
+     * @var string
+     * 
+     */
+    public $name;
+    
+    /**
+     * 
      * Undocumented function
      * 
      * @return void
@@ -85,6 +94,57 @@ class Lux_Service_Amazon_S3_Resource_Bucket extends Lux_Service_Amazon_S3_Resour
         }
         
         return $this->_exists;
+    }
+    
+    /**
+     * 
+     * Undocumented function
+     * 
+     * @return void
+     * 
+     */
+    public function fetchKeys()
+    {
+        // make a GET request and expect 200 OK
+        $response = $this->_s3->fetch('get', $this, 200);
+        
+        $xml = new SimpleXMLElement($response->getContent());
+        
+        // go through each key and collect info
+        $keys = array();
+        foreach ($xml->Contents as $key) {
+            $data = array();
+            foreach ($key->children() as $elem) {
+                $name = strtolower($elem->getName());
+                if ($name == 'owner') {
+                    $data['owner'] = array(
+                        'id'           => (string) $elem->ID,
+                        'display_name' => (string) $elem->DisplayName,
+                    );
+                    continue;
+                }
+                
+                // just add the value
+                $data[$name] = (string) $elem;
+            }
+            
+            // add one key
+            $keys[] = $data;
+        }
+        
+        return $keys;
+    }
+    
+    /**
+     * 
+     * Undocumented function
+     * 
+     * @return void
+     * 
+     */
+    public function getBucketName()
+    {
+        return $this->name;
     }
     
     /**
