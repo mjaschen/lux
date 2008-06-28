@@ -279,7 +279,6 @@ class Lux_Service_Amazon_S3 extends Solar_Base
         }
         
         // look up an exception class for this error code
-        // and throw it
         return $this->_exception(
             $code,
             $info
