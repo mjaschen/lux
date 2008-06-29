@@ -83,6 +83,18 @@ class Lux_Service_Amazon_S3_Resource_Object extends Lux_Service_Amazon_S3_Resour
      * @return void
      * 
      */
+    public function load()
+    {
+        $this->_fetch('get');
+    }
+    
+    /**
+     * 
+     * Undocumented function
+     * 
+     * @return void
+     * 
+     */
     public function save()
     {
         // make a PUT request and expect 200 OK
@@ -132,8 +144,21 @@ class Lux_Service_Amazon_S3_Resource_Object extends Lux_Service_Amazon_S3_Resour
      * @return void
      * 
      */
-    public function getHeaders()
+    public function getHeaders($method)
     {
-        return $this->_headers;
+        $method = strtolower($method);
+        
+        // always send these headers
+        $headers = $this->_headers;
+        
+        if ($method == 'put') {
+            // add x-amz-meta-* headers
+            $headers = array_merge($headers, $this->_getMetaHeaders());
+            
+            // add acl header
+            $headers['x-amz-acl'] = $this->acl;
+        }
+        
+        return $headers;
     }
 }

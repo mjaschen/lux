@@ -60,6 +60,24 @@ abstract class Lux_Service_Amazon_S3_Resource extends Solar_Base
     
     /**
      * 
+     * undocumented class variable
+     * 
+     * @var string
+     * 
+     */
+    public $meta = array();
+    
+    /**
+     * 
+     * undocumented class variable
+     * 
+     * @var string
+     * 
+     */
+    public $acl = 'private';
+    
+    /**
+     * 
      * Constructor
      * 
      * @return void
@@ -103,7 +121,7 @@ abstract class Lux_Service_Amazon_S3_Resource extends Solar_Base
      * @return void
      * 
      */
-    abstract public function getHeaders();
+    abstract public function getHeaders($method);
     
     /**
      * 
@@ -115,5 +133,22 @@ abstract class Lux_Service_Amazon_S3_Resource extends Solar_Base
     protected function _fetch($method, $expect = 200, $params = array())
     {
         return $this->_s3->fetch($method, $this, $expect, $params);
+    }
+    
+    /**
+     * 
+     * undocumented class variable
+     * 
+     * @var string
+     * 
+     */
+    protected function _getMetaHeaders()
+    {
+        $headers = array();
+        
+        foreach ($this->meta as $key => $val) {
+            $headers["x-amz-meta-$key"] = $val;
+        }
+        return $headers;
     }
 }

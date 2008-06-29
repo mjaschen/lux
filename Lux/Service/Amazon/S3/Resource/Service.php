@@ -55,7 +55,7 @@ class Lux_Service_Amazon_S3_Resource_Service extends Lux_Service_Amazon_S3_Resou
      * @return void
      * 
      */
-    public function getHeaders()
+    public function getHeaders($method)
     {
         return $this->_headers;
     }

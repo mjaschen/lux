@@ -170,8 +170,18 @@ class Lux_Service_Amazon_S3_Resource_Bucket extends Lux_Service_Amazon_S3_Resour
      * @return void
      * 
      */
-    public function getHeaders()
+    public function getHeaders($method)
     {
-        return $this->_headers;
+        $method = strtolower($method);
+        
+        // always send these headers
+        $headers = $this->_headers;
+        
+        if ($method == 'put') {
+            // add acl header
+            $headers['x-amz-acl'] = $this->acl;
+        }
+        
+        return $headers;
     }
 }

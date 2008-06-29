@@ -129,7 +129,10 @@ class Lux_Service_Amazon_S3 extends Solar_Base
         );
         
         // merge headers from resource with these
-        $headers = array_merge($resource->getHeaders(), $headers);
+        $headers = array_merge(
+            $resource->getHeaders($method),
+            $headers
+        );
         
         // add all headers
         foreach ($headers as $name => $val) {
@@ -214,6 +217,7 @@ class Lux_Service_Amazon_S3 extends Solar_Base
                         . $content_type               . "\n"
                         . $headers['Date']            . "\n"
                         . implode("\n", $amz_headers)
+                        . (!empty($amz_headers) ? "\n" : '')
                         . $canon_resource;
         
         $hash = hash_hmac(
