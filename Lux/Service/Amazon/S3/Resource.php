@@ -1,20 +1,29 @@
 <?php
 /**
  * 
- * undocumented class
+ * Class representing different resources on Amazon
  * 
- * @package default
+ * @category Lux
+ * 
+ * @package Lux_Service
+ * 
+ * @subpackage Lux_Service_Amazon_S3
  * 
  * @author Antti Holvikari <anttih@gmail.com>
+ * 
+ * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
 abstract class Lux_Service_Amazon_S3_Resource extends Solar_Base
 {
     /**
      * 
-     * undocumented class variable
+     * User provided confguration values
      * 
-     * @var string
+     * `s3`
+     * : (dependency) Dependency on Lux_Service_Amazon_S3
+     * 
+     * @var array
      * 
      */
     protected $_Lux_Service_Amazon_S3_Resource = array(
@@ -23,34 +32,35 @@ abstract class Lux_Service_Amazon_S3_Resource extends Solar_Base
     
     /**
      * 
-     * undocumented class variable
+     * Amazon S3
      * 
-     * @var string
+     * @var Lux_Service_Amazon_S3
      * 
      */
     protected $_s3;
     
     /**
      * 
-     * undocumented class variable
+     * HTTP Headers
      * 
-     * @var string
+     * @var array
      * 
      */
     protected $_headers = array();
     
     /**
      * 
-     * undocumented class variable
+     * Indicates the existance of this resource
+     * at Amazon
      * 
-     * @var string
+     * @var bool
      * 
      */
     protected $_exists = false;
     
     /**
      * 
-     * Undocumented function
+     * Constructor
      * 
      * @return void
      * 
@@ -68,7 +78,7 @@ abstract class Lux_Service_Amazon_S3_Resource extends Solar_Base
     
     /**
      * 
-     * Undocumented function
+     * Returns the bucket name
      * 
      * @return void
      * 
@@ -79,7 +89,7 @@ abstract class Lux_Service_Amazon_S3_Resource extends Solar_Base
     
     /**
      * 
-     * Undocumented function
+     * Gets request body for requests on this resource
      * 
      * @return void
      * 
@@ -88,7 +98,7 @@ abstract class Lux_Service_Amazon_S3_Resource extends Solar_Base
     
     /**
      * 
-     * Undocumented function
+     * Gets request headers for requests on this resource
      * 
      * @return void
      * 
