@@ -298,9 +298,13 @@ class Lux_Service_Amazon_S3 extends Solar_Base
         $content = $response->getContent();
         
         // default error code
-        $code = 'ERR_RESPONSE';
+        $code = 'ERR_UNEXPECTED_STATUS';
         
-        if (! empty($content)) {
+        $status_code = $response->getStatusCode();
+        
+        // if this was an actual error with error content
+        // we'll parse the content
+        if ($status_code >= 400 && ! empty($content)) {
             // parse error message
             $xml = new SimpleXMLElement($content);
             
