@@ -91,6 +91,18 @@ class Lux_Service_Amazon_S3_Resource_Object extends Lux_Service_Amazon_S3_Resour
     
     /**
      * 
+     * Deletes this object
+     * 
+     * @return void
+     * 
+     */
+    public function delete()
+    {
+        return $this->_s3->fetch('delete', $this, 204);
+    }
+    
+    /**
+     * 
      * Undocumented function
      * 
      * @return void
