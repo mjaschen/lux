@@ -192,7 +192,10 @@ class Lux_Service_Amazon_S3 extends Solar_Base
         }
         
         if (! empty($uri->path)) {
-            $canon_resource .= implode('/', $uri->path) . '.' . $uri->format;
+            $canon_resource .= implode('/', $uri->path);
+            
+            // add format?
+            $canon_resource .= empty($uri->format) ? '' : ".{$uri->format}";
         }
         
         $content_md5 = '';
