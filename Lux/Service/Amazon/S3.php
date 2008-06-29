@@ -115,6 +115,7 @@ class Lux_Service_Amazon_S3 extends Solar_Base
         // new HTTP request
         $request = Solar::factory('Solar_Http_Request');
         
+        // create Solar_Uri object based on resource and params
         $uri = $this->_buildUri($resource, $params);
         
         // build URI from the uri object
@@ -122,6 +123,7 @@ class Lux_Service_Amazon_S3 extends Solar_Base
                 ->setMethod($method)
                 ->setContent($resource->getBody());
         
+        // make sure these headers are sent
         $headers = array(
             'Host'           => $uri->host,
             'Date'           => gmdate('r'),
