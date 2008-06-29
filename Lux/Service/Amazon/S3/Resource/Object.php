@@ -86,7 +86,7 @@ class Lux_Service_Amazon_S3_Resource_Object extends Lux_Service_Amazon_S3_Resour
     public function save()
     {
         // make a PUT request and expect 200 OK
-        return $this->_s3->fetch('put', $this, 200);
+        return $this->_fetch('put', 200);
     }
     
     /**
@@ -98,7 +98,7 @@ class Lux_Service_Amazon_S3_Resource_Object extends Lux_Service_Amazon_S3_Resour
      */
     public function delete()
     {
-        return $this->_s3->fetch('delete', $this, 204);
+        return $this->_fetch('delete', 204);
     }
     
     /**

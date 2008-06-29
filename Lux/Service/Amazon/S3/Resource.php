@@ -105,4 +105,15 @@ abstract class Lux_Service_Amazon_S3_Resource extends Solar_Base
      */
     abstract public function getHeaders();
     
+    /**
+     * 
+     * Undocumented function
+     * 
+     * @return void
+     * 
+     */
+    protected function _fetch($method, $expect = 200, $params = array())
+    {
+        return $this->_s3->fetch($method, $this, $expect, $params);
+    }
 }

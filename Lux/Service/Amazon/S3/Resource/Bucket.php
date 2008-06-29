@@ -55,7 +55,7 @@ class Lux_Service_Amazon_S3_Resource_Bucket extends Lux_Service_Amazon_S3_Resour
     public function save()
     {
         // make a PUT request and expect 200 OK
-        return $this->_s3->fetch('put', $this, 200);
+        return $this->_fetch('put', 200);
     }
     
     /**
@@ -68,7 +68,7 @@ class Lux_Service_Amazon_S3_Resource_Bucket extends Lux_Service_Amazon_S3_Resour
     public function delete()
     {
         // make a DELETE request and expect 204 No Content
-        return $this->_s3->fetch('delete', $this, 204);
+        return $this->_fetch('delete', 204);
     }
     
     /**
@@ -83,7 +83,7 @@ class Lux_Service_Amazon_S3_Resource_Bucket extends Lux_Service_Amazon_S3_Resour
         try {
             
             // perform a HEAD request and expect 200 OK
-            $this->_s3->fetch('head', $this, 200, array('max-keys' => 0));
+            $this->_fetch('head', 200, array('max-keys' => 0));
             
         } catch (Lux_Service_Amazon_S3_Exception_AccessDenied $e) {
             // the bucket is owned by someone else
@@ -106,7 +106,7 @@ class Lux_Service_Amazon_S3_Resource_Bucket extends Lux_Service_Amazon_S3_Resour
     public function fetchKeys()
     {
         // make a GET request and expect 200 OK
-        $response = $this->_s3->fetch('get', $this, 200);
+        $response = $this->_fetch('get', 200);
         
         $xml = new SimpleXMLElement($response->getContent());
         

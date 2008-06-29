@@ -19,7 +19,7 @@ class Lux_Service_Amazon_S3_Resource_Service extends Lux_Service_Amazon_S3_Resou
      */
     public function fetchBuckets()
     {
-        $response = $this->_s3->fetch('get', $this);
+        $response = $this->_fetch('get');
         
         $xml = new SimpleXMLElement($response->getContent());
         
